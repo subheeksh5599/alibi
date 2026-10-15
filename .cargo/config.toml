@@ -1,0 +1,3 @@
+[target.wasm32-unknown-unknown]
+# alibi-wallet supplies getrandom's randomness itself (see crates/alibi-wallet/src/entropy.rs).
+rustflags = ["--cfg", 'getrandom_backend="custom"']
