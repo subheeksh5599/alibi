@@ -1,9 +1,11 @@
 # Alibi
 
-**Status (backend):** verifier, anchor index and HTTP API are built and tested live against mainnet: 89,689 blocks indexed, 1,869 root audits with 0 mismatches, `scripts/e2e.py` 18/18 passing (transcript in `evidence/`).
-Mainnet is indexed from block 3,428,142 (the block before Ironwood activated). Every 144-block
-boundary is audited against the server's own tree state. Hosting is pending; see
-[Deploy](#deploy). The wallet side ("send with alibi") is the next stage and is not built yet.
+**Status (backend): live on Convex** at https://compassionate-owl-414.convex.site
+(`GET /v1/health`). Mainnet is indexed from block 3,428,142 (the block before Ironwood activated)
+and followed by a Convex cron every 2 minutes. Every 144-block boundary is audited against the
+server's own tree state: 1,881 audits so far, 0 mismatches. `scripts/e2e.py` passes 18/18 against
+the live URL; the transcript is in `evidence/`. The wallet side ("send with alibi") is the next
+stage and is not built yet.
 
 Alibi proves that the shielded ZEC a transaction spends was already in the shielded pool before a
 given block. The proof reveals one date and nothing else: no balance, no history, no addresses, no
@@ -83,7 +85,7 @@ Verdict kinds:
 Example:
 
 ```console
-$ curl -s 'http://127.0.0.1:8790/v1/tx/14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f?before=3516995' | jq .verdict.summary
+$ curl -s 'https://compassionate-owl-414.convex.site/v1/tx/14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f?before=3516995' | jq .verdict.summary
 "Every shielded input was already in its pool at the end of block 3516994, before block 3516995. None of them can be value created in block 3516995 or later."
 ```
 
@@ -133,7 +135,23 @@ for zero trust.
 
 ## Deploy
 
-`deploy/install.sh` installs the binary, an optional pre-built index and a systemd unit under
+**Convex (production).** `backend/` holds a Convex app:
+
+* `alibi-core` compiles to a 866 KB WebAssembly module with no imports
+  (`crates/alibi-wasm`); `npm run wasm` embeds it into `convex/lib/wasmBytes.ts`;
+* Node actions (`convex/chain.ts`) talk gRPC to lightwalletd and run the core in WebAssembly;
+* `convex/ledger.ts` holds the index (blocks, roots, audits, progress), `convex/http.ts` serves the
+  same API as the Rust server, and `convex/crons.ts` follows the chain;
+* the historical index was imported from the Rust indexer's SQLite file
+  (`npx convex import`). `scripts/init-progress.ts` refuses to start the Convex index unless the
+  server's tree state at the imported height has exactly the roots the local index computed.
+
+```console
+cargo build --release -p alibi-wasm --target wasm32-unknown-unknown
+cd backend && npm install && npm run wasm && npx convex deploy
+```
+
+**Self-hosted.** `deploy/install.sh` installs the binary, an optional pre-built index and a systemd unit under
 `/opt/alibi`, `/etc/alibi` and `alibi.service`. It touches nothing else. The binary needs glibc 2.34
 or newer.
 
@@ -142,6 +160,8 @@ or newer.
 ```
 crates/alibi-core      tx parsing, tree roots, claim rules (no network)
 crates/alibi-service   lightwalletd client, SQLite index, verifier, HTTP API, CLI
+crates/alibi-wasm      the core as an import-free WebAssembly module
+backend/               Convex deployment: index, cron, HTTP API
 proto/                 lightwalletd protocol
 scripts/e2e.py         live end-to-end checks
 deploy/                systemd unit and installer
