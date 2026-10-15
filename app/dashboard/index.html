@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard | Alibi</title>
+<meta name="description" content="Check whether every shielded input of a Zcash transaction existed before a cut-off block.">
+<link rel="icon" href="/assets/img/favicon.png">
+<link rel="stylesheet" href="/assets/css/dashboard.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="/">Alibi</a>
+    <div class="seg" role="group" aria-label="Network">
+      <button type="button" data-net="main">Mainnet</button>
+      <button type="button" data-net="test">Testnet</button>
+    </div>
+    <nav class="nav" aria-label="Sections">
+      <a href="#/verify" data-view="verify">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Verify</a>
+      <a href="#/checkpoint" data-view="checkpoint">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v12M2 8h12"/><circle cx="8" cy="8" r="3"/></svg>Checkpoint</a>
+      <a href="#/anchor" data-view="anchor">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>Anchor</a>
+      <a href="#/index" data-view="index">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 13h12M4 13V8M8 13V4M12 13V6"/></svg>Index</a>
+      <p class="nav-label">Testnet wallet</p>
+      <a href="#/wallet" data-view="wallet">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="4" width="12" height="9" rx="1.5"/><path d="M10.5 8.5h1M2 6.5h12"/></svg>Wallet</a>
+      <a href="#/send" data-view="send">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h10M9 4.5L12.5 8 9 11.5"/></svg>Send with alibi</a>
+    </nav>
+    <div class="side-foot">
+      <span id="net-dot" class="dot"></span>
+      <span id="net-text">Connecting…</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- Verify -->
+    <section class="view" id="view-verify">
+      <header class="head">
+        <h1>Verify</h1>
+        <p>Did every shielded input exist before the cut-off?</p>
+      </header>
+      <form id="vf-form" class="panel form" autocomplete="off" novalidate>
+        <label for="vf-tx">Transaction id</label>
+        <input id="vf-tx" class="mono" spellcheck="false" maxlength="64" placeholder="64 hex characters">
+        <div class="row">
+          <div class="grow">
+            <label for="vf-before">Cut-off <span class="soft">optional</span></label>
+            <input id="vf-before" placeholder="2026-09-24T18:30Z or a block height">
+          </div>
+          <button id="vf-go" type="submit">Verify</button>
+        </div>
+        <p id="vf-err" class="err" hidden></p>
+        <div class="examples">
+          <span class="soft">Examples</span>
+          <button type="button" class="link" data-tx="14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f" data-before="3516995">Ironwood spend, height cut-off</button>
+          <button type="button" class="link" data-tx="14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f" data-before="2026-09-24">Same spend, date cut-off</button>
+          <button type="button" class="link" data-tx="0ba9fb6372d50b6999f1629ccc438b0d6fb090ead9c8cf655fb4e99457fb4214" data-before="">Orchard to Ironwood</button>
+          <button type="button" class="link" data-tx="012b9655bf6df069e08fc77d130e52f973719c6f89184d2e4ecea641c3557ed5" data-before="">Transparent only</button>
+        </div>
+      </form>
+      <div id="vf-out" aria-live="polite"></div>
+    </section>
+
+    <!-- Checkpoint -->
+    <section class="view" id="view-checkpoint">
+      <header class="head">
+        <h1>Checkpoint</h1>
+        <p>The shared anchor to spend against for a cut-off.</p>
+      </header>
+      <form id="cp-form" class="panel form" novalidate>
+        <label for="cp-before">Cut-off</label>
+        <div class="row">
+          <input id="cp-before" class="grow" placeholder="2026-09-24 or a block height">
+          <button type="submit">Find</button>
+        </div>
+        <p id="cp-err" class="err" hidden></p>
+      </form>
+      <div id="cp-out" aria-live="polite"></div>
+    </section>
+
+    <!-- Anchor -->
+    <section class="view" id="view-anchor">
+      <header class="head">
+        <h1>Anchor</h1>
+        <p>The first block whose pool root equals an anchor.</p>
+      </header>
+      <form id="an-form" class="panel form" novalidate>
+        <div class="row">
+          <div>
+            <label for="an-pool">Pool</label>
+            <select id="an-pool">
+              <option value="ironwood">Ironwood</option>
+              <option value="orchard">Orchard</option>
+              <option value="sapling">Sapling</option>
+            </select>
+          </div>
+          <div class="grow">
+            <label for="an-hex">Anchor</label>
+            <input id="an-hex" class="mono" spellcheck="false" maxlength="64" placeholder="64 hex characters">
+          </div>
+          <button type="submit">Locate</button>
+        </div>
+        <p id="an-err" class="err" hidden></p>
+      </form>
+      <div id="an-out" aria-live="polite"></div>
+    </section>
+
+    <!-- Index -->
+    <section class="view" id="view-index">
+      <header class="head head-row">
+        <div>
+          <h1>Index</h1>
+          <p>Roots recomputed from every block and audited every 144 blocks.</p>
+        </div>
+        <button id="ix-refresh" class="ghost" type="button">Refresh</button>
+      </header>
+      <div id="ix-out"><div class="panel muted">Loading…</div></div>
+    </section>
+    <!-- Wallet -->
+    <section class="view" id="view-wallet">
+      <header class="head head-row">
+        <div>
+          <h1>Wallet</h1>
+          <p>Testnet. Keys are created and kept in this browser.</p>
+        </div>
+        <button id="w-sync" class="ghost" type="button" hidden>Sync</button>
+      </header>
+      <div id="w-empty" class="panel form" hidden>
+        <p class="lead">No wallet in this browser.</p>
+        <div class="row">
+          <button id="w-create" type="submit">Create wallet</button>
+          <button id="w-restore-open" class="ghost tall" type="button">Restore from seed</button>
+        </div>
+        <form id="w-restore" class="restore" hidden novalidate>
+          <label for="w-seed">Seed</label>
+          <input id="w-seed" class="mono" spellcheck="false" placeholder="64 hex characters">
+          <div class="row">
+            <div class="grow">
+              <label for="w-birthday">Birthday block</label>
+              <input id="w-birthday" inputmode="numeric" placeholder="the first block the wallet must scan">
+            </div>
+            <button type="submit">Restore</button>
+          </div>
+        </form>
+        <p id="w-err" class="err" hidden></p>
+      </div>
+      <div id="w-main" hidden>
+        <div class="panel"><table class="kv" id="w-summary"></table></div>
+        <p class="section-label">Notes</p>
+        <div class="panel" id="w-notes"></div>
+        <p class="section-label">Checkpoints</p>
+        <div class="panel" id="w-cps"></div>
+        <details class="raw">
+          <summary>Seed and birthday</summary>
+          <div class="panel seedbox"><table class="kv" id="w-seedbox"></table></div>
+          <p class="soft small"><button type="button" class="link" id="w-forget">Remove this wallet from the browser</button></p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Send -->
+    <section class="view" id="view-send">
+      <header class="head">
+        <h1>Send with alibi</h1>
+        <p>Pay from notes that already existed before an incident, and prove it.</p>
+      </header>
+      <div id="s-nowallet" class="panel muted" hidden>Create a wallet first. <a class="link" href="#/wallet">Open Wallet</a></div>
+      <form id="s-form" class="panel form" autocomplete="off" novalidate hidden>
+        <label for="s-to">To</label>
+        <div class="row tight">
+          <input id="s-to" class="mono grow" spellcheck="false" placeholder="utest1…">
+          <button id="s-self" class="ghost tall" type="button">My address</button>
+        </div>
+        <div class="row">
+          <div class="grow">
+            <label for="s-amount">Amount <span class="soft">TAZ</span></label>
+            <input id="s-amount" inputmode="decimal" placeholder="0.01">
+          </div>
+          <div class="grow">
+            <label for="s-cutoff">Incident cut-off</label>
+            <input id="s-cutoff" placeholder="block height or 2026-10-15T09:00Z">
+          </div>
+        </div>
+        <label for="s-memo">Memo <span class="soft">optional</span></label>
+        <input id="s-memo" maxlength="512">
+        <div id="s-preview" class="preview"></div>
+        <div class="row end">
+          <button id="s-go" type="submit" disabled>Send with alibi</button>
+        </div>
+        <p id="s-err" class="err" hidden></p>
+      </form>
+      <div id="s-out" aria-live="polite"></div>
+    </section>
+  </main>
+</div>
+<script src="/assets/js/dashboard.js"></script>
+<script type="module" src="/assets/js/wallet/ui.js"></script>
+</body>
+</html>
