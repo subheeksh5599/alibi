@@ -1,0 +1,3 @@
+{
+  "node": { "externalPackages": ["@grpc/grpc-js"] }
+}
