@@ -6,13 +6,13 @@
 //! theft), the notes predate it exactly when `H < I`: the tree state at the end of block `I`
 //! already includes the outputs created in block `I`.
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::pool::Pool;
 use crate::tx::TxAnchors;
 
 /// Where an anchor was found in chain history.
-#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "status", rename_all = "snake_case")]
 pub enum AnchorLocation {
     /// The anchor is the pool's tree root at the end of `height`, and the root first appeared in
