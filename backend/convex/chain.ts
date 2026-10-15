@@ -5,11 +5,28 @@ import { internalAction } from "./_generated/server";
 import type { ActionCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { core, CoreError } from "./lib/core";
-import { Lightwalletd, NotFound } from "./lib/lwd";
+import { NotFound, Upstream } from "./lib/lwd";
 import { GRID, POOLS } from "./lib/constants";
 
-const NETWORKS: Record<string, { lwd: string; confirmations: number }> = {
-  main: { lwd: process.env.ALIBI_LWD_MAIN ?? "https://zec.rocks:443", confirmations: 10 },
+// Mainnet lightwalletd servers from three operators. ALIBI_LWD_MAIN (comma separated) overrides.
+const MAIN_SERVERS = [
+  "https://zec.rocks:443",
+  "https://us.zec.stardust.rest:443",
+  "https://zcash.mysideoftheweb.com:9067",
+  "https://na.zec.rocks:443",
+  "https://eu.zec.rocks:443",
+  "https://eu.zec.stardust.rest:443",
+  "https://ap.zec.rocks:443",
+  "https://sa.zec.rocks:443",
+];
+/** Index of a server run by a different operator than MAIN_SERVERS[0], for audit cross-checks. */
+const CROSS_CHECK = 1;
+
+const NETWORKS: Record<string, { servers: string[]; confirmations: number }> = {
+  main: {
+    servers: process.env.ALIBI_LWD_MAIN ? process.env.ALIBI_LWD_MAIN.split(",").map((s) => s.trim()).filter(Boolean) : MAIN_SERVERS,
+    confirmations: 10,
+  },
 };
 const BATCH = 150;
 const STEP_BUDGET_MS = 4 * 60_000;
@@ -25,7 +42,7 @@ export const indexStep = internalAction({
   handler: async (ctx, args) => {
     const network = args.network ?? "main";
     const net = NETWORKS[network];
-    const lwd = new Lightwalletd(net.lwd);
+    const lwd = new Upstream(net.servers);
     const started = Date.now();
     let added = 0;
     try {
@@ -57,8 +74,20 @@ export const indexStep = internalAction({
         if (w.written === 0) break; // another run advanced the index
         added += w.written;
         for (const g of res.grid as { height: number; roots: Record<string, string> }[]) {
+          // The roots must equal the tree state of the server we follow AND of a server run by a
+          // different operator.
           const ts = await lwd.treeState(Number(g.height));
-          const results = POOLS.map((pool) => ({ pool, computed: g.roots[pool], reported: ts.roots[pool] }));
+          let other = ts;
+          try {
+            other = await lwd.at(CROSS_CHECK).treeState(Number(g.height));
+          } catch {
+            other = ts; // second operator unreachable: fall back to the primary comparison
+          }
+          const results = POOLS.map((pool) => ({
+            pool,
+            computed: g.roots[pool],
+            reported: ts.roots[pool] === other.roots[pool] ? ts.roots[pool] : `${ts.roots[pool]}|${other.roots[pool]}`,
+          }));
           const a = await ctx.runMutation(internal.ledger.recordAudit, { network, height: Number(g.height), results });
           if (a.mismatches > 0) {
             const back = Math.max(p.startHeight, Number(g.height) - 50);
@@ -116,7 +145,7 @@ async function resolveCutoff(ctx: ActionCtx, network: string, before: string): P
 
 const isReply = (x: any): x is Reply => x && typeof x.status === "number" && "body" in x;
 
-async function locate(ctx: ActionCtx, lwd: Lightwalletd, network: string, pool: string, root: string, below: number | null, p: any) {
+async function locate(ctx: ActionCtx, lwd: Upstream, network: string, pool: string, root: string, below: number | null, p: any) {
   const hit = await ctx.runQuery(internal.ledger.locateRoot, { network, pool, root });
   if (hit) return { status: "located", height: hit.height, block_hash: hit.hash ?? "", block_time: hit.time ?? 0 };
   const upper = below !== null ? below - 1 : await lwd.latestHeight();
@@ -148,7 +177,7 @@ async function verifyById(ctx: ActionCtx, network: string, txid: string, before:
     if (isReply(c)) return c;
     cutoff = c;
   }
-  const lwd = new Lightwalletd(net.lwd);
+  const lwd = new Upstream(net.servers);
   try {
     let tx;
     try {
@@ -188,7 +217,7 @@ async function verifyById(ctx: ActionCtx, network: string, txid: string, before:
         transaction: ev.transaction,
         verdict: ev.verdict,
         index: { start_height: fresh!.startHeight, indexed_height: fresh!.indexedHeight },
-        source: net.lwd,
+        source: lwd.url,
       },
     };
   } catch (e: any) {
@@ -248,7 +277,7 @@ export const anchor = internalAction({
     if (!/^[0-9a-f]{64}$/.test(anchor)) return fail(400, "bad_request", "anchor must be 64 hex characters, in transaction byte order");
     const p = await ctx.runQuery(internal.ledger.progress, { network: a.network });
     if (!p) return fail(503, "index_not_ready", "index not started");
-    const lwd = new Lightwalletd(net.lwd);
+    const lwd = new Upstream(net.servers);
     try {
       const location = await locate(ctx, lwd, a.network, a.pool, anchor, null, p);
       return { status: 200, body: { network: a.network, pool: a.pool, anchor, location } };
@@ -290,21 +319,33 @@ export const health = internalAction({
   handler: async (ctx): Promise<Reply> => {
     const networks = [];
     for (const [network, net] of Object.entries(NETWORKS)) {
-      const lwd = new Lightwalletd(net.lwd);
-      let tip: number | null = null;
+      const up = new Upstream(net.servers);
+      let servers: { url: string; tip: number | null; error?: string }[] = [];
       try {
-        tip = await lwd.latestHeight();
-      } catch {
-        tip = null;
+        servers = await Promise.all(
+          net.servers.map(async (url, i) => {
+            try {
+              const tip = await Promise.race([
+                up.at(i).latestHeight(),
+                new Promise<number>((_, rej) => setTimeout(() => rej(new Error("timeout")), 8000)),
+              ]);
+              return { url, tip };
+            } catch (e: any) {
+              return { url, tip: null, error: String(e?.message ?? e).slice(0, 120) };
+            }
+          }),
+        );
       } finally {
-        lwd.close();
+        up.close();
       }
+      const tips = servers.map((s) => s.tip).filter((t): t is number => t !== null);
+      const tip = tips.length ? Math.max(...tips) : null;
       const p = await ctx.runQuery(internal.ledger.progress, { network });
       networks.push({
         network,
-        lightwalletd: net.lwd,
         confirmations: net.confirmations,
         chain_tip: tip,
+        upstream: { reachable: tips.length, configured: servers.length, servers },
         index: p ? { start_height: p.startHeight, indexed_height: p.indexedHeight } : null,
         lag_blocks: p && tip !== null ? Math.max(0, tip - p.indexedHeight) : null,
         roots_indexed: p?.rootCounts ?? {},
@@ -312,6 +353,6 @@ export const health = internalAction({
         last_error: p?.lastError ? { message: p.lastError, at: p.lastErrorAt } : null,
       });
     }
-    return { status: 200, body: { ok: networks.every((n) => n.index !== null), networks } };
+    return { status: 200, body: { ok: networks.every((n) => n.index !== null && n.upstream.reachable > 0), networks } };
   },
 });
