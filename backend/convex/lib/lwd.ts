@@ -139,3 +139,65 @@ export class Lightwalletd {
     return { hex: r.hex, height: Number(r.height) };
   }
 }
+
+/**
+ * Several lightwalletd servers behind one interface. Each call goes to the current server and
+ * moves on to the next one when it fails; `NotFound` is an answer, not a failure, and is returned
+ * as is. The servers come from more than one operator so one outage does not stop the index.
+ */
+export class Upstream {
+  private clients: Lightwalletd[];
+  private current = 0;
+  readonly urls: string[];
+
+  constructor(urls: string[]) {
+    if (urls.length === 0) throw new Error("no lightwalletd servers configured");
+    this.urls = urls;
+    this.clients = urls.map((u) => new Lightwalletd(u));
+  }
+
+  get url(): string {
+    return this.urls[this.current];
+  }
+
+  close() {
+    for (const c of this.clients) c.close();
+  }
+
+  /** A client for one specific server, for cross-checks. */
+  at(i: number): Lightwalletd {
+    return this.clients[i % this.clients.length];
+  }
+
+  private async run<T>(f: (l: Lightwalletd) => Promise<T>): Promise<T> {
+    const errors: string[] = [];
+    for (let k = 0; k < this.clients.length; k++) {
+      const i = (this.current + k) % this.clients.length;
+      try {
+        const r = await f(this.clients[i]);
+        this.current = i;
+        return r;
+      } catch (e: any) {
+        if (e instanceof NotFound) throw e;
+        errors.push(`${this.urls[i]}: ${e?.message ?? e}`);
+      }
+    }
+    throw new Error(`every lightwalletd server failed: ${errors.join("; ")}`);
+  }
+
+  latestHeight() {
+    return this.run((l) => l.latestHeight());
+  }
+  treeState(h: number) {
+    return this.run((l) => l.treeState(h));
+  }
+  blockHeader(h: number) {
+    return this.run((l) => l.blockHeader(h));
+  }
+  blockRange(a: number, b: number) {
+    return this.run((l) => l.blockRange(a, b));
+  }
+  transaction(txid: string) {
+    return this.run((l) => l.transaction(txid));
+  }
+}
