@@ -22,8 +22,3 @@ thiserror = "2"
 opt-level = 3
 codegen-units = 4
 
-# The browser wallet: whole-program optimisation for the prover.
-[profile.wasm]
-inherits = "release"
-lto = "fat"
-codegen-units = 1
