@@ -26,6 +26,37 @@ const blockId = (height: number) => Buffer.from([0x08, ...varint(height)]);
 const blockRange = (start: number, end: number) => Buffer.concat([field(0x0a, blockId(start)), field(0x12, blockId(end))]);
 const txFilter = (wireHash: Buffer) => field(0x1a, wireHash);
 
+/** Reads a protobuf varint at `i`; returns [value, next index]. */
+function readVarint(b: Buffer, i: number): [number, number] {
+  let v = 0n;
+  let shift = 0n;
+  for (;;) {
+    if (i >= b.length) throw new Error("truncated varint");
+    const byte = b[i++];
+    v |= BigInt(byte & 0x7f) << shift;
+    if (!(byte & 0x80)) return [Number(BigInt.asIntN(32, v)), i];
+    shift += 7n;
+  }
+}
+
+/** SendResponse { int32 errorCode = 1; string errorMessage = 2; } */
+export function decodeSendResponse(b: Buffer): { errorCode: number; errorMessage: string } {
+  let errorCode = 0;
+  let errorMessage = "";
+  let i = 0;
+  while (i < b.length) {
+    const [tag, j] = readVarint(b, i);
+    i = j;
+    if (tag === 0x08) [errorCode, i] = readVarint(b, i);
+    else if (tag === 0x12) {
+      const [len, k] = readVarint(b, i);
+      errorMessage = b.subarray(k, k + len).toString("utf8");
+      i = k + len;
+    } else throw new Error(`unexpected SendResponse field tag ${tag}`);
+  }
+  return { errorCode, errorMessage };
+}
+
 export type TreeState = {
   network: string;
   height: number;
@@ -121,6 +152,13 @@ export class Lightwalletd {
     });
   }
 
+  /** Broadcasts a raw transaction. Not retried: a resend of the same bytes is harmless, but a
+   * timeout must surface to the caller rather than being masked. */
+  async sendTransaction(raw: Buffer): Promise<{ errorCode: number; errorMessage: string }> {
+    const b = await this.unaryOnce("SendTransaction", field(0x0a, raw), 60_000);
+    return decodeSendResponse(b);
+  }
+
   /** Raw transaction by display-order txid. height: 0 = mempool, >= 2^32-1 = not in best chain. */
   async transaction(txidDisplay: string): Promise<{ hex: string; height: number }> {
     const wire = Buffer.from(txidDisplay, "hex").reverse();
@@ -199,5 +237,8 @@ export class Upstream {
   }
   transaction(txid: string) {
     return this.run((l) => l.transaction(txid));
+  }
+  sendTransaction(raw: Buffer) {
+    return this.run((l) => l.sendTransaction(raw));
   }
 }
