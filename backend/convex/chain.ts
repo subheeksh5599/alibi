@@ -367,3 +367,32 @@ export const health = internalAction({
   },
 });
 
+/**
+ * Starts an index at `height` from the server's tree state there. Only for a network with no
+ * index yet; anchors from before `height` are reported as outside the index.
+ */
+export const startIndex = internalAction({
+  args: { network: v.string(), height: v.number() },
+  handler: async (ctx, a) => {
+    const net = NETWORKS[a.network];
+    if (!net) throw new Error(`unknown network ${a.network}`);
+    const lwd = new Upstream(net.servers);
+    try {
+      const ts = await lwd.treeState(a.height);
+      await ctx.runMutation(internal.ledger.initProgress, {
+        network: a.network,
+        startHeight: a.height,
+        indexedHeight: a.height,
+        indexedHash: ts.hash,
+        trees: ts.trees,
+        rootCounts: { sapling: 0, orchard: 0, ironwood: 0 },
+        auditChecks: 0,
+        auditMismatches: 0,
+      });
+      await ctx.runMutation(internal.ledger.seedBlock, { network: a.network, height: a.height, hash: ts.hash, time: ts.time });
+      return { started: a.height, hash: ts.hash, roots: ts.roots };
+    } finally {
+      lwd.close();
+    }
+  },
+});

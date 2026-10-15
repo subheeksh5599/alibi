@@ -227,3 +227,15 @@ export const initProgress = internalMutation({
     await ctx.db.insert("progress", { ...a, updatedAt: Date.now() });
   },
 });
+
+/** Records the block an index starts from, so lookups at that height resolve. */
+export const seedBlock = internalMutation({
+  args: { network: v.string(), height: v.number(), hash: v.string(), time: v.number() },
+  handler: async (ctx, a) => {
+    const existing = await ctx.db
+      .query("blocks")
+      .withIndex("by_height", (q) => q.eq("network", a.network).eq("height", a.height))
+      .unique();
+    if (!existing) await ctx.db.insert("blocks", a);
+  },
+});
