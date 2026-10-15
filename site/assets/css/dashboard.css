@@ -43,6 +43,11 @@ button, input, select { font: inherit; color: inherit; }
 .dot.ok { background: #16a34a; }
 .dot.bad { background: var(--no); }
 
+.seg { display: flex; gap: 2px; margin: 0 4px 16px; padding: 2px; background: #efefef; border-radius: 7px; }
+.seg button { flex: 1; border: 0; background: none; padding: 5px 0; border-radius: 5px; font-size: 12px; color: var(--soft); cursor: pointer; }
+.seg button.on { background: #fff; color: var(--ink); font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.nav-label { font-size: 11px; color: var(--faint); margin: 18px 10px 6px; letter-spacing: .02em; }
+
 /* main */
 .main { flex: 1; min-width: 0; padding: 40px 48px 80px; }
 .view { display: none; max-width: 880px; }
@@ -75,6 +80,18 @@ button[type=submit]:hover { background: #2a2a2a; }
 button:disabled { opacity: .5; cursor: progress; }
 .ghost { background: #fff; color: var(--ink); border-color: var(--line-strong); height: 32px; padding: 0 12px; font-size: 13px; }
 .ghost:hover { background: var(--side); }
+.ghost.tall { height: 38px; padding: 0 14px; font-size: 14px; }
+.row.tight { align-items: center; margin-bottom: 14px; }
+.row.end { justify-content: flex-end; margin-top: 16px; }
+.row + label, .row + .row { margin-top: 14px; }
+#s-memo { margin-bottom: 0; }
+.lead { margin: 0 0 16px; }
+.restore { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+.preview { margin-top: 16px; font-size: 13px; color: var(--soft); min-height: 20px; }
+.preview b { color: var(--ink); font-weight: 500; }
+.preview .no-t b { color: inherit; }
+.small { font-size: 12px; margin-top: 8px; }
+.seedbox { margin-top: 8px; }
 .err { color: var(--no); font-size: 13px; margin: 10px 0 0; }
 .examples { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 16px; font-size: 13px; }
 .link { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; }
@@ -118,6 +135,9 @@ details.raw pre { margin: 8px 0 0; padding: 14px; background: var(--side); borde
 @keyframes s { to { transform: rotate(360deg); } }
 
 @media (max-width: 860px) {
+  .seg { margin: 0 6px 0 0; flex: none; }
+  .seg button { padding: 5px 8px; }
+  .nav-label { display: none; }
   .shell { flex-direction: column; }
   .side { position: sticky; z-index: 5; height: auto; width: 100%; flex-direction: row; align-items: center; gap: 4px; padding: 10px 12px; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
   .brand { padding: 4px 10px 4px 4px; }

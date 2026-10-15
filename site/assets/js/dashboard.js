@@ -18,8 +18,15 @@
   var row = function (k, v) { return "<tr><th>" + esc(k) + "</th><td>" + v + "</td></tr>"; };
   var sub = function (s) { return s ? "<br><small>" + esc(s) + "</small>" : ""; };
 
+  var NET = localStorage.getItem("alibi.net") === "test" ? "test" : "main";
+  window.ALIBI_API = API;
+
+  function withNet(path) {
+    return path + (path.indexOf("?") >= 0 ? "&" : "?") + "network=" + NET;
+  }
+
   function api(path) {
-    return fetch(API + path).then(function (r) {
+    return fetch(API + withNet(path)).then(function (r) {
       return r.json().then(function (b) { return { status: r.status, body: b }; },
         function () { return { status: r.status, body: { message: "Unexpected response (HTTP " + r.status + ")." } }; });
     }, function () {
@@ -31,7 +38,25 @@
 
   // ------------------------------------------------------------ router
 
-  var VIEWS = ["verify", "checkpoint", "anchor", "index"];
+  var VIEWS = ["verify", "checkpoint", "anchor", "index", "wallet", "send"];
+  var TITLES = { verify: "Verify", checkpoint: "Checkpoint", anchor: "Anchor", index: "Index", wallet: "Wallet", send: "Send with alibi" };
+
+  function setNet(n, quiet) {
+    NET = n === "test" ? "test" : "main";
+    localStorage.setItem("alibi.net", NET);
+    Array.prototype.forEach.call(document.querySelectorAll(".seg button"), function (b) {
+      b.classList.toggle("on", b.getAttribute("data-net") === NET);
+    });
+    if (!quiet) {
+      ["vf-out", "cp-out", "an-out"].forEach(function (id) { $(id).innerHTML = ""; });
+      lastRun = null;
+      sideStatus();
+      if (health) renderIndex();
+    }
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".seg button"), function (b) {
+    b.addEventListener("click", function () { setNet(b.getAttribute("data-net")); });
+  });
   function route() {
     var parts = location.hash.replace(/^#\/?/, "").split("?");
     var view = VIEWS.indexOf(parts[0]) >= 0 ? parts[0] : "verify";
@@ -41,8 +66,10 @@
       a.classList.toggle("on", on);
       if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
-    document.title = view.charAt(0).toUpperCase() + view.slice(1) + " | Alibi";
+    document.title = TITLES[view] + " | Alibi";
     var q = new URLSearchParams(parts[1] || "");
+    if (q.get("net") && q.get("net") !== NET) setNet(q.get("net"));
+    window.dispatchEvent(new CustomEvent("alibi:view", { detail: view }));
     if (view === "verify" && q.get("tx") && q.get("tx") !== lastRun) {
       $("vf-tx").value = q.get("tx");
       $("vf-before").value = q.get("before") || "";
@@ -69,7 +96,7 @@
     if (!HEX64.test(tx)) { setErr($("vf-err"), "A transaction id is 64 hexadecimal characters."); return; }
     setErr($("vf-err"), "");
     lastRun = tx;
-    if (updateHash) history.replaceState(null, "", "#/verify?tx=" + tx + (before ? "&before=" + encodeURIComponent(before) : ""));
+    if (updateHash) history.replaceState(null, "", "#/verify?tx=" + tx + (before ? "&before=" + encodeURIComponent(before) : "") + "&net=" + NET);
     var btn = $("vf-go");
     btn.disabled = true;
     $("vf-out").innerHTML = loading("Fetching the transaction and locating its anchors");
@@ -161,18 +188,23 @@
   // ------------------------------------------------------------ index + sidebar status
 
   var health = null;
+  function current() {
+    if (!health) return null;
+    return health.networks.filter(function (n) { return n.network === NET; })[0] || null;
+  }
   function sideStatus() {
     var dot = $("net-dot"), txt = $("net-text");
-    if (!health) { dot.className = "dot bad"; txt.textContent = "Verifier unreachable"; return; }
-    var n = health.networks[0];
-    var good = health.ok && n.audits && n.audits.mismatches === 0;
+    var n = current();
+    if (!n) { dot.className = "dot bad"; txt.textContent = health ? "No index for this network" : "Verifier unreachable"; return; }
+    var good = n.index && n.upstream.reachable > 0 && n.audits && n.audits.mismatches === 0;
     dot.className = "dot " + (good ? "ok" : "bad");
-    txt.textContent = "Mainnet · " + num(n.index && n.index.indexed_height);
+    txt.textContent = (NET === "test" ? "Testnet" : "Mainnet") + " · " + num(n.index && n.index.indexed_height);
   }
 
   function renderIndex() {
-    if (!health) { $("ix-out").innerHTML = failure({ message: "Could not reach the verifier." }); return; }
-    var n = health.networks[0], a = n.audits || {};
+    var n = current();
+    if (!n) { $("ix-out").innerHTML = failure({ message: health ? "There is no index for this network." : "Could not reach the verifier." }); return; }
+    var a = n.audits || {};
     var rows = row("Chain tip", '<span class="num">' + num(n.chain_tip) + "</span>") +
       row("Indexed to", '<span class="num">' + num(n.index && n.index.indexed_height) + "</span>" + sub(num(n.lag_blocks) + " behind, " + num(n.confirmations) + " held back for reorgs")) +
       row("Indexed from", '<span class="num">block ' + num(n.index && n.index.start_height) + "</span>") +
@@ -192,7 +224,7 @@
   function loadIndex() {
     var b = $("ix-refresh");
     b.disabled = true;
-    return api("/v1/health").then(function (res) {
+    return fetch(API + "/v1/health").then(function (r) { return r.json().then(function (b) { return { status: r.status, body: b }; }); }, function () { return { status: 0, body: {} }; }).then(function (res) {
       b.disabled = false;
       health = res.status === 200 && res.body.networks ? res.body : null;
       sideStatus();
@@ -201,6 +233,7 @@
   }
   $("ix-refresh").addEventListener("click", loadIndex);
 
+  setNet(NET, true);
   window.addEventListener("hashchange", route);
   if (!location.hash) history.replaceState(null, "", "#/verify" + (location.search.indexOf("tx=") >= 0 ? location.search : ""));
   route();

@@ -12,6 +12,10 @@
 <div class="shell">
   <aside class="side">
     <a class="brand" href="/">Alibi</a>
+    <div class="seg" role="group" aria-label="Network">
+      <button type="button" data-net="main">Mainnet</button>
+      <button type="button" data-net="test">Testnet</button>
+    </div>
     <nav class="nav" aria-label="Sections">
       <a href="#/verify" data-view="verify">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Verify</a>
@@ -21,10 +25,15 @@
         <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>Anchor</a>
       <a href="#/index" data-view="index">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 13h12M4 13V8M8 13V4M12 13V6"/></svg>Index</a>
+      <p class="nav-label">Testnet wallet</p>
+      <a href="#/wallet" data-view="wallet">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="4" width="12" height="9" rx="1.5"/><path d="M10.5 8.5h1M2 6.5h12"/></svg>Wallet</a>
+      <a href="#/send" data-view="send">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h10M9 4.5L12.5 8 9 11.5"/></svg>Send with alibi</a>
     </nav>
     <div class="side-foot">
       <span id="net-dot" class="dot"></span>
-      <span id="net-text">Mainnet</span>
+      <span id="net-text">Connecting…</span>
     </div>
   </aside>
 
@@ -112,8 +121,84 @@
       </header>
       <div id="ix-out"><div class="panel muted">Loading…</div></div>
     </section>
+    <!-- Wallet -->
+    <section class="view" id="view-wallet">
+      <header class="head head-row">
+        <div>
+          <h1>Wallet</h1>
+          <p>Testnet. Keys are created and kept in this browser.</p>
+        </div>
+        <button id="w-sync" class="ghost" type="button" hidden>Sync</button>
+      </header>
+      <div id="w-empty" class="panel form" hidden>
+        <p class="lead">No wallet in this browser.</p>
+        <div class="row">
+          <button id="w-create" type="submit">Create wallet</button>
+          <button id="w-restore-open" class="ghost tall" type="button">Restore from seed</button>
+        </div>
+        <form id="w-restore" class="restore" hidden novalidate>
+          <label for="w-seed">Seed</label>
+          <input id="w-seed" class="mono" spellcheck="false" placeholder="64 hex characters">
+          <div class="row">
+            <div class="grow">
+              <label for="w-birthday">Birthday block</label>
+              <input id="w-birthday" inputmode="numeric" placeholder="the first block the wallet must scan">
+            </div>
+            <button type="submit">Restore</button>
+          </div>
+        </form>
+        <p id="w-err" class="err" hidden></p>
+      </div>
+      <div id="w-main" hidden>
+        <div class="panel"><table class="kv" id="w-summary"></table></div>
+        <p class="section-label">Notes</p>
+        <div class="panel" id="w-notes"></div>
+        <p class="section-label">Checkpoints</p>
+        <div class="panel" id="w-cps"></div>
+        <details class="raw">
+          <summary>Seed and birthday</summary>
+          <div class="panel seedbox"><table class="kv" id="w-seedbox"></table></div>
+          <p class="soft small"><button type="button" class="link" id="w-forget">Remove this wallet from the browser</button></p>
+        </details>
+      </div>
+    </section>
+
+    <!-- Send -->
+    <section class="view" id="view-send">
+      <header class="head">
+        <h1>Send with alibi</h1>
+        <p>Pay from notes that already existed before an incident, and prove it.</p>
+      </header>
+      <div id="s-nowallet" class="panel muted" hidden>Create a wallet first. <a class="link" href="#/wallet">Open Wallet</a></div>
+      <form id="s-form" class="panel form" autocomplete="off" novalidate hidden>
+        <label for="s-to">To</label>
+        <div class="row tight">
+          <input id="s-to" class="mono grow" spellcheck="false" placeholder="utest1…">
+          <button id="s-self" class="ghost tall" type="button">My address</button>
+        </div>
+        <div class="row">
+          <div class="grow">
+            <label for="s-amount">Amount <span class="soft">TAZ</span></label>
+            <input id="s-amount" inputmode="decimal" placeholder="0.01">
+          </div>
+          <div class="grow">
+            <label for="s-cutoff">Incident cut-off</label>
+            <input id="s-cutoff" placeholder="block height or 2026-10-15T09:00Z">
+          </div>
+        </div>
+        <label for="s-memo">Memo <span class="soft">optional</span></label>
+        <input id="s-memo" maxlength="512">
+        <div id="s-preview" class="preview"></div>
+        <div class="row end">
+          <button id="s-go" type="submit" disabled>Send with alibi</button>
+        </div>
+        <p id="s-err" class="err" hidden></p>
+      </form>
+      <div id="s-out" aria-live="polite"></div>
+    </section>
   </main>
 </div>
 <script src="/assets/js/dashboard.js"></script>
+<script type="module" src="/assets/js/wallet/ui.js"></script>
 </body>
 </html>
