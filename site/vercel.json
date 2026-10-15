@@ -7,6 +7,13 @@
       "destination": "https://compassionate-owl-414.convex.site/v1/:path*"
     }
   ],
+  "redirects": [
+    {
+      "source": "/verify",
+      "destination": "/dashboard",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
