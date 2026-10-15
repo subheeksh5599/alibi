@@ -24,6 +24,8 @@ ORCHARD_SPEND = "8f94ba362d1e4da09cfb2768d41d94f423e8a2a29b1de7f4c23a84f8eec5cbc
 POOL_CROSSING = "0ba9fb6372d50b6999f1629ccc438b0d6fb090ead9c8cf655fb4e99457fb4214"  # Orchard -> Ironwood, 3,517,319
 SHIELDED_COINBASE = "0c171e2a89395f734dbf3467d98f8fc2617d32171920ee3d9e6b05b0af4f4043"  # 3,517,302
 TRANSPARENT_ONLY = "012b9655bf6df069e08fc77d130e52f973719c6f89184d2e4ecea641c3557ed5"  # 3,517,306
+# Real testnet transactions (NU7, consensus branch 77190ad9).
+TEST_FAUCET_PAYMENT = "fc1d127deaeecc90d03bb5bc37ef569f870d93ff6b9129278f805c64c641a73f"  # Ironwood, 4,504,356
 
 log = []
 failures = 0
@@ -123,6 +125,42 @@ else:
 
 s, r = call("GET", "/v1/anchor/ironwood/" + "11" * 32)
 check("random 32 bytes as an anchor: not located", s == 200 and r["location"]["status"] == "not_located")
+
+# ------------------------------------------------------------------ testnet (NU7) and the wallet relay
+
+s, r = call("GET", "/v1/health")
+test = next((n for n in r.get("networks", []) if n["network"] == "test"), {})
+check("health reports a testnet index with no audit mismatches", test.get("index") is not None and test.get("audits", {}).get("mismatches") == 0,
+      f"indexed to {test.get('index', {}).get('indexed_height')}, {test.get('audits', {}).get('checks')} audits")
+
+s, r = call("GET", f"/v1/tx/{TEST_FAUCET_PAYMENT}?network=test")
+check("testnet NU7 transaction parses: Ironwood spend with one anchor",
+      s == 200 and r["transaction"]["branch_id"] == "77190ad9" and r["transaction"]["pools"][0]["pool"] == "ironwood")
+
+s, r = call("GET", "/v1/chain/tip?network=test")
+tip = r.get("height", 0)
+check("relay: testnet tip", s == 200 and tip > 4_504_000, tip)
+
+s, r = call("GET", f"/v1/chain/treestate?network=test&height={tip - 20}")
+check("relay: tree state returns the Ironwood tree and its root", s == 200 and len(r["ironwood"]["root"]) == 64 and r["ironwood"]["tree"])
+
+s, r = call("GET", f"/v1/chain/blocks?network=test&from={tip - 30}&to={tip - 21}")
+check("relay: ten compact blocks, framed", s == 200 and r["count"] == 10 and len(r["framed"]) > 0)
+
+s, r = call("GET", f"/v1/chain/blocks?network=test&from={tip - 1000}&to={tip}")
+check("relay: more than 500 blocks in one request is refused", s == 400, r.get("message"))
+
+s, r = call("GET", "/v1/chain/blocks?network=test&from=10&to=5")
+check("relay: reversed range is refused", s == 400)
+
+s, r = call("POST", "/v1/chain/broadcast", {"network": "test", "hex": "00" * 40})
+check("relay: bytes that are not a transaction are never broadcast", s == 422, r.get("message"))
+
+s, r = call("POST", "/v1/chain/broadcast", {"network": "test", "hex": "not hex"})
+check("relay: non-hex body refused", s == 400)
+
+s, r = call("GET", "/v1/chain/tip?network=nope")
+check("relay: unknown network refused", s == 400)
 
 out = ROOT / "evidence" / f"e2e-{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}.json"
 out.parent.mkdir(exist_ok=True)
