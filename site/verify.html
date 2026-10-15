@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html dir="ltr" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+<meta content="Check whether every shielded input of a Zcash transaction existed before a cut-off block, from the anchors its spends commit to." name="description"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<title>Verify a transaction | Alibi</title>
+<link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet"/>
+<link href="assets/vendor/aos/aos.css" rel="stylesheet"/>
+<link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet"/>
+<link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet"/>
+<link href="assets/css/common.css" rel="stylesheet"/>
+<link href="assets/css/header.css" rel="stylesheet"/>
+<link href="assets/css/footer.css" rel="stylesheet"/>
+<link href="assets/img/mark-dark.svg" rel="icon" type="image/svg+xml"/><link href="assets/css/verify.css" rel="stylesheet"/></head>
+<body>
+<header class="fixed-top d-flex align-items-center" id="header">
+<div class="container-xxl banner-container-1440 banner-container-991">
+<div class="justify-content-center align-items-center">
+<div class="d-flex align-items-center justify-content-between">
+<a class="logo logo-light" href="/#hero">
+<img alt="" class="img-fluid" src="assets/img/wordmark-light.svg"/></a>
+<a class="logo logo-dark" href="/#hero">
+<img alt="" class="img-fluid" src="assets/img/wordmark-dark.svg"/></a>
+<a class="final-mark-logo" href="/#hero">
+<img alt="" class="img-fluid" src="assets/img/mark-light.svg" style="height:24px;"/></a>
+<a class="final-dark-logo" href="/#hero">
+<img alt="" class="img-fluid" src="assets/img/mark-dark.svg" style="height:24px;"/></a>
+<nav class="navbar" id="navbar">
+<div class="position-relative d-lg-none language" id="language-m"></div>
+<ul>
+<div class="d-lg-none d-flex justify-content-between align-items-center dropdown-mobile-logo">
+<div class="dropdown-logo">
+<img alt="" src="assets/img/mark-menu.svg"/>
+</div>
+<div class="dropdown-off">
+<svg fill="none" height="20" viewbox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M9.636 8.223L17.131 0.727997L19.272 2.86899L11.777 10.364L19.272 17.859L17.131 20L9.636 12.505L2.141 20L0 17.859L7.495 10.364L0 2.86899L2.141 0.727997L9.636 8.223Z" fill="#4A21EF"></path>
+</svg>
+</div>
+</div>
+<li class="dropdown new-dropdown dropdown-c">
+<a class="scrollto" href="/#choose-your-wallet">
+<span class="products-text">Product</span>
+<i class="bi bi-chevron-down"></i>
+<i class="bi bi-caret-down-fill"></i>
+<i class="bi bi-caret-up-fill" style="display: none;"></i>
+<i class="d-lg-none bi bi-plus"></i>
+<i class="d-lg-none bi bi-dash"></i>
+</a>
+<ul class="d-none d-lg-block dropdown-box dropdown-box-c">
+<div class="dropdown-box-content dropdown-box-content-c">
+<div class="box-item">
+<a class="item" href="https://github.com/subheeksh5599/alibi#send-with-alibi">
+<img alt="" src="assets/img/menu-wallet.svg"/>
+<div>
+<h3 class="item-title">Alibi Wallet</h3>
+<p class="text">Age-aware coin selection keeps your oldest shielded notes untouched until you need them.</p>
+</div>
+</a>
+</div>
+<div class="box-item">
+<a class="item" href="https://github.com/subheeksh5599/alibi#send-with-alibi">
+<img alt="" src="assets/img/menu-send.svg"/>
+<div>
+<h3 class="item-title">Alibi Send</h3>
+<p class="text">Builds an Ironwood spend anchored to the last shared checkpoint before an incident.</p>
+</div>
+</a>
+</div>
+<div class="box-item">
+<a class="item" href="/verify">
+<img alt="" src="assets/img/menu-verifier.svg"/>
+<div>
+<h3 class="item-title">Verifier</h3>
+<p class="text">Reads the snapshot a transaction commits to and the block its inputs provably predate.</p>
+</div>
+</a>
+</div>
+<div class="box-item">
+<a class="item" href="/#choose-your-wallet">
+<img alt="" src="assets/img/menu-grid.svg"/>
+<div>
+<h3 class="item-title">Checkpoint Grid</h3>
+<p class="text">Shared anchor heights, so every alibi for one incident looks the same on chain.</p>
+</div>
+</a>
+</div>
+<div class="box-item border-none">
+<a class="item" href="/#choose-your-wallet">
+<img alt="" src="assets/img/menu-lab.svg"/>
+<div>
+<h3 class="item-title">Forgery Lab</h3>
+<p class="text">Tries each known way to fake an alibi and records how it is refused.</p>
+</div>
+</a>
+</div>
+<div class="box-item">
+<a class="item" href="/#choose-your-wallet">
+<img alt="" src="assets/img/menu-all.svg"/>
+<div>
+<h3 class="item-title">View All Components</h3>
+</div>
+</a>
+</div>
+</div>
+</ul>
+<ul class="d-lg-none dropdown-mobile dropdown-mobile-c">
+<li class="box-item">
+<a class="item" href="/#choose-your-wallet">
+<img alt="" src="assets/img/menu-all.svg"/>
+<div>
+<h3 class="item-title">View All Components</h3>
+</div>
+</a>
+</li>
+<li class="box-item">
+<a class="item" href="https://github.com/subheeksh5599/alibi#send-with-alibi">
+<img alt="" src="assets/img/menu-wallet.svg"/>
+<div>
+<h3 class="item-title">Alibi Wallet</h3>
+<p class="text">Age-aware coin selection keeps your oldest shielded notes untouched until you need them.</p>
+</div>
+</a>
+</li>
+<li class="box-item">
+<a class="item" href="https://github.com/subheeksh5599/alibi#send-with-alibi">
+<img alt="" src="assets/img/menu-send.svg"/>
+<div>
+<h3 class="item-title">Alibi Send</h3>
+<p class="text">Builds an Ironwood spend anchored to the last shared checkpoint before an incident.</p>
+</div>
+</a>
+</li>
+<li class="box-item">
+<a class="item" href="/verify">
+<img alt="" src="assets/img/menu-verifier.svg"/>
+<div>
+<h3 class="item-title">Verifier</h3>
+<p class="text">Reads the snapshot a transaction commits to and the block its inputs provably predate.</p>
+</div>
+</a>
+</li>
+<li class="box-item">
+<a class="item" href="/#choose-your-wallet">
+<img alt="" src="assets/img/menu-grid.svg"/>
+<div>
+<h3 class="item-title">Checkpoint Grid</h3>
+<p class="text">Shared anchor heights, so every alibi for one incident looks the same on chain.</p>
+</div>
+</a>
+</li>
+<li class="box-item">
+<a class="item" href="/#choose-your-wallet">
+<img alt="" src="assets/img/menu-lab.svg"/>
+<div>
+<h3 class="item-title">Forgery Lab</h3>
+<p class="text">Tries each known way to fake an alibi and records how it is refused.</p>
+</div>
+</a>
+</li>
+</ul>
+</li>
+<li class="dropdown new-dropdown dropdown-c">
+<a class="scrollto" href="/#choose-your-wallet">
+<span>Run</span>
+<i class="bi bi-caret-down-fill"></i>
+<i class="bi bi-caret-up-fill" style="display: none;"></i>
+<i class="d-lg-none bi bi-plus"></i>
+<i class="d-lg-none bi bi-dash"></i>
+</a>
+<ul class="d-none d-lg-block dropdown-box dropdown-box-c">
+<div class="dropdown-box-content dropdown-box-content-c dropdown-box-content-c-app">
+<div class="box-item border-none">
+<a class="item" href="/verify">
+<img alt="" src="assets/img/menu-browser.svg"/>
+<div>
+<h3 class="item-title">Browser Verifier</h3>
+<p class="text">Runs locally, nothing uploaded</p>
+</div>
+</a>
+</div>
+<div class="box-item border-none">
+<a class="item" href="/verify#vf-api">
+<img alt="" src="assets/img/menu-api.svg"/>
+<div>
+<h3 class="item-title">Verifier API</h3>
+<p class="text">One call per deposit check</p>
+</div>
+</a>
+</div>
+<div class="box-item border-none">
+<a class="item" href="https://github.com/subheeksh5599/alibi" rel="noopener noreferrer" target="_bank">
+<img alt="" src="assets/img/menu-crate.svg"/>
+<div>
+<h3 class="item-title">Rust Crate</h3>
+<p class="text">Built on librustzcash</p>
+</div>
+</a>
+</div>
+</div>
+</ul>
+<ul class="d-lg-none dropdown-mobile dropdown-mobile-c">
+<li class="box-item border-none">
+<a class="item" href="/verify">
+<img alt="" src="assets/img/menu-browser.svg"/>
+<div>
+<h3 class="item-title">Browser Verifier</h3>
+<p class="text">Runs locally, nothing uploaded</p>
+</div>
+</a>
+</li>
+<li class="box-item border-none">
+<a class="item" href="/verify#vf-api">
+<img alt="" src="assets/img/menu-api.svg"/>
+<div>
+<h3 class="item-title">Verifier API</h3>
+<p class="text">One call per deposit check</p>
+</div>
+</a>
+</li>
+<li class="box-item border-none">
+<a class="item" href="https://github.com/subheeksh5599/alibi" rel="noopener noreferrer" target="_bank">
+<img alt="" src="assets/img/menu-crate.svg"/>
+<div>
+<h3 class="item-title">Rust Crate</h3>
+<p class="text">Built on librustzcash</p>
+</div>
+</a>
+</li>
+</ul>
+</li>
+<li class="dropdown"><a class="scrollto" href="/#beyond-crypto">Mechanism</a></li>
+<li class="dropdown"><a class="scrollto" href="/#crypto">Coin Age</a></li>
+<li class="dropdown new-dropdown">
+<a class="scrollto" href="/#trusted">Attacks</a>
+</li>
+<li class="dropdown new-dropdown">
+<a class="scrollto" href="/#stand-out">
+<span>Docs</span>
+<i class="bi bi-caret-down-fill"></i>
+<i class="bi bi-caret-up-fill" style="display: none;"></i>
+<i class="d-lg-none bi bi-plus"></i>
+<i class="d-lg-none bi bi-dash"></i>
+</a>
+<ul class="d-none d-lg-block dropdown-box">
+<div class="dropdown-box-content dropdown-box-content-about">
+<div class="dropdown-box-item">
+<div class="">
+<li data-path="/about"><a href="/#beyond-crypto">Mechanism</a></li>
+<li><a href="/#stand-out">Guarantees</a></li>
+<li><a href="/#trusted">Threat Model</a></li>
+<li data-path="blog"><a href="https://zips.z.cash/zip-0229">Specifications</a></li>
+<li><a href="/#crypto">Coin Age</a></li>
+</div>
+</div>
+</div>
+</ul>
+<ul class="d-lg-none dropdown-mobile dropdown-mobile-about">
+<li><a href="/#beyond-crypto">Mechanism</a></li>
+<li><a href="/#stand-out">Guarantees</a></li>
+<li><a href="/#trusted">Threat Model</a></li>
+<li><a href="https://zips.z.cash/zip-0229">Specifications</a></li>
+<li><a href="/#crypto">Coin Age</a></li>
+</ul>
+</li>
+</ul>
+<i class="mobile-nav-toggle">
+<img alt="" class="mobile-nav-light" sizes="" src="assets/img/menu-light.svg"/>
+<img alt="" class="mobile-nav-dark" sizes="" src="assets/img/menu-dark.svg"/>
+</i>
+</nav>
+<div class="downloads-btn position-relative">
+<div class="language" id="language"></div>
+<div class="set-off-btn animate__animated animate__pulse">
+<div class="set-off-btn animate__animated animate__pulse">
+<a href="/verify">
+<button class="btn-common my-downloads-btn animate__animated animate__pulse" type="button">Verify</button>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<header>
+<link href="assets/css/style.css" rel="stylesheet"/>
+</header>
+<main class="verify" id="main"><section class="vf" id="verifier">
+<div class="vf-hero">
+<div class="container">
+<p class="vf-eyebrow">VERIFIER · ZCASH MAINNET</p>
+<h1 class="vf-title">Did these coins exist<br/>before the incident?</h1>
+<p class="vf-lede">Paste any Zcash transaction. Alibi reads the pool snapshot each shielded spend commits to, finds the block that snapshot comes from, and tells you whether every shielded input was already in the pool before your cut-off. Nothing else about the sender is revealed or needed.</p>
+<form autocomplete="off" class="vf-card vf-form" id="vf-form" novalidate="">
+<label class="vf-label" for="vf-txid">Transaction id</label>
+<input class="vf-input vf-mono" id="vf-txid" inputmode="text" maxlength="64" name="tx" placeholder="64 hex characters" spellcheck="false"/>
+<div class="vf-row">
+<div class="vf-col">
+<label class="vf-label" for="vf-before">Cut-off <span class="vf-muted">(optional)</span></label>
+<input class="vf-input" id="vf-before" name="before" placeholder="2026-09-24T18:30Z or a block height"/>
+</div>
+<button class="vf-btn" id="vf-submit" type="submit">Verify</button>
+</div>
+<p class="vf-error" hidden="" id="vf-form-error" role="alert"></p>
+<div class="vf-examples">
+<span class="vf-muted">Try:</span>
+<button class="vf-chip" data-before="3516995" data-tx="14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f" type="button">Ironwood spend, cut-off just after its anchor</button>
+<button class="vf-chip" data-before="2026-09-24" data-tx="14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f" type="button">Same spend, cut-off Sep 24</button>
+<button class="vf-chip" data-before="" data-tx="0ba9fb6372d50b6999f1629ccc438b0d6fb090ead9c8cf655fb4e99457fb4214" type="button">Orchard to Ironwood crossing</button>
+<button class="vf-chip" data-before="" data-tx="012b9655bf6df069e08fc77d130e52f973719c6f89184d2e4ecea641c3557ed5" type="button">Transparent only</button>
+</div>
+</form>
+</div>
+</div>
+<div class="container vf-body">
+<div aria-live="polite" class="vf-result" hidden="" id="vf-result"></div>
+<div class="vf-grid">
+<div class="vf-card vf-light">
+<h3 class="vf-h3">Checkpoint for an incident</h3>
+<p class="vf-muted">The shared anchor an alibi spend should use for a cut-off: the last 144-block grid boundary before it. Everyone proving against the same incident uses the same anchor, so the anchor does not single anyone out.</p>
+<form class="vf-inline" id="vf-cp-form" novalidate="">
+<input class="vf-input" id="vf-cp-before" placeholder="2026-09-24 or a block height"/>
+<button class="vf-btn vf-btn-dark" type="submit">Find checkpoint</button>
+</form>
+<div aria-live="polite" class="vf-cp" id="vf-cp-result"></div>
+</div>
+<div class="vf-card vf-light">
+<h3 class="vf-h3">Index status</h3>
+<p class="vf-muted">Roots are recomputed from every block, never taken from a server, and checked against two independent server operators every 144 blocks.</p>
+<dl class="vf-dl" id="vf-status"><dt>Status</dt><dd>loading…</dd></dl>
+</div>
+</div>
+<div class="vf-card vf-light vf-api" id="vf-api">
+<h3 class="vf-h3">Use it from your own code</h3>
+<p class="vf-muted">Same origin, no key, CORS open. Every answer is JSON.</p>
+<pre class="vf-pre"><code>GET  /v1/tx/{txid}?before=2026-09-24T18:30Z
+POST /v1/verify          {"txid": "…"} or {"hex": "…", "before": "…"}
+GET  /v1/checkpoint?before=…
+GET  /v1/anchor/{sapling|orchard|ironwood}/{anchor}
+GET  /v1/cutoff?before=…
+GET  /v1/health</code></pre>
+</div>
+</div>
+</section>
+</main>
+<div class="one-wallet-footer home-footer">
+<div class="one-wallet-footer-main">
+
+
+<footer id="footer">
+<div class="container footer-top">
+<div class="row footer-top-box">
+<div class="col-lg col-md-6 col-sm-6 col-6 order-lg-1 order-md-1 order-sm-1 footer-products col-xs-6 top-item">
+<h3>Product</h3>
+<ul>
+<li><a href="/#choose-your-wallet">Alibi Wallet</a></li><li><a href="/#crypto">Alibi Send</a></li><li><a href="/verify">Verifier</a></li><li><a href="/#stand-out">Checkpoint Grid</a></li><li><a href="/#trusted">Forgery Lab</a></li><li><a href="/#choose-your-wallet">CLI</a></li></ul>
+</div>
+<div class="col-lg col-md-6 col-sm-6 col-6 order-lg-2 order-md-3 order-sm-3 footer-support col-xs-6 top-item">
+<h3>Mechanism</h3>
+<ul>
+<li><a href="/#beyond-crypto">Anchor rule</a></li><li><a href="/#crypto">Coin age</a></li><li><a href="/#stand-out">Shared checkpoints</a></li><li><a href="/#trusted">Threat model</a></li></ul>
+</div>
+<div class="col-lg col-md-6 col-sm-6 col-6 order-lg-3 order-md-5 order-sm-5 footer-partner col-xs-6 top-item">
+<h3>Specifications</h3>
+<ul>
+<li><a href="https://zips.z.cash/zip-0229" rel="noopener" target="_blank">ZIP 229</a></li><li><a href="https://zips.z.cash/zip-0318" rel="noopener" target="_blank">ZIP 318</a></li><li><a href="https://zips.z.cash/zip-0315" rel="noopener" target="_blank">ZIP 315</a></li><li><a href="https://zips.z.cash/protocol/protocol.pdf" rel="noopener" target="_blank">Protocol</a></li></ul>
+</div>
+<div class="col-lg col-md-6 col-sm-6 col-6 order-lg-4 order-md-2 order-sm-2 footer-about col-xs-6 top-item">
+<h3>Project</h3>
+<ul>
+<li><a href="/#hero">Overview</a></li><li><a href="/#stand-out">Guarantees</a></li><li><a href="/#trusted">Attacks</a></li></ul>
+</div>
+<div class="col-lg col-md-6 col-sm-6 col-6 order-lg-5 order-md-4 order-sm-4 footer-legal col-xs-6 top-item">
+<h3>Legal</h3>
+<ul>
+<li><a href="/#footer">MIT License</a></li><li><a href="/#footer">No data collected</a></li></ul>
+</div>
+</div>
+</div>
+<div class="container footer-bottom">
+<div class="copyright d-flex justify-content-between align-items-lg-end align-items-start flex-lg-row flex-column">
+<div class="brand-foot d-flex justify-content-start align-items-center">
+<div class="logo" href="#hero">
+<img alt="" src="assets/img/mark-footer.svg"/>
+</div>
+<div class="text">
+<p>© 2026 Alibi</p>
+</div>
+</div>
+<div class="payment-link">
+<div class="link d-flex align-items-center flex-wrap flex-lg-nowrap">
+<div class="link-item source">
+<a href="/#hero" rel="noopener noreferrer"><img alt="" src="assets/img/github.svg" style="padding: 4px;"/></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<a class="back-to-top d-flex align-items-center justify-content-center" href="/#hero"><i class="bi bi-arrow-up-short"></i></a>
+<script src="assets/vendor/aos/aos.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+</div><script src="assets/js/site.js"></script><script src="assets/js/verify.js"></script></body>
+</html>
