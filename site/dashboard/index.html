@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard | Alibi</title>
+<meta name="description" content="Check whether every shielded input of a Zcash transaction existed before a cut-off block.">
+<link rel="icon" href="/assets/img/favicon.png">
+<link rel="stylesheet" href="/assets/css/dashboard.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="/">Alibi</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#/verify" data-view="verify">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Verify</a>
+      <a href="#/checkpoint" data-view="checkpoint">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v12M2 8h12"/><circle cx="8" cy="8" r="3"/></svg>Checkpoint</a>
+      <a href="#/anchor" data-view="anchor">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>Anchor</a>
+      <a href="#/index" data-view="index">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 13h12M4 13V8M8 13V4M12 13V6"/></svg>Index</a>
+    </nav>
+    <div class="side-foot">
+      <span id="net-dot" class="dot"></span>
+      <span id="net-text">Mainnet</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- Verify -->
+    <section class="view" id="view-verify">
+      <header class="head">
+        <h1>Verify</h1>
+        <p>Did every shielded input exist before the cut-off?</p>
+      </header>
+      <form id="vf-form" class="panel form" autocomplete="off" novalidate>
+        <label for="vf-tx">Transaction id</label>
+        <input id="vf-tx" class="mono" spellcheck="false" maxlength="64" placeholder="64 hex characters">
+        <div class="row">
+          <div class="grow">
+            <label for="vf-before">Cut-off <span class="soft">optional</span></label>
+            <input id="vf-before" placeholder="2026-09-24T18:30Z or a block height">
+          </div>
+          <button id="vf-go" type="submit">Verify</button>
+        </div>
+        <p id="vf-err" class="err" hidden></p>
+        <div class="examples">
+          <span class="soft">Examples</span>
+          <button type="button" class="link" data-tx="14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f" data-before="3516995">Ironwood spend, height cut-off</button>
+          <button type="button" class="link" data-tx="14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f" data-before="2026-09-24">Same spend, date cut-off</button>
+          <button type="button" class="link" data-tx="0ba9fb6372d50b6999f1629ccc438b0d6fb090ead9c8cf655fb4e99457fb4214" data-before="">Orchard to Ironwood</button>
+          <button type="button" class="link" data-tx="012b9655bf6df069e08fc77d130e52f973719c6f89184d2e4ecea641c3557ed5" data-before="">Transparent only</button>
+        </div>
+      </form>
+      <div id="vf-out" aria-live="polite"></div>
+    </section>
+
+    <!-- Checkpoint -->
+    <section class="view" id="view-checkpoint">
+      <header class="head">
+        <h1>Checkpoint</h1>
+        <p>The shared anchor to spend against for a cut-off.</p>
+      </header>
+      <form id="cp-form" class="panel form" novalidate>
+        <label for="cp-before">Cut-off</label>
+        <div class="row">
+          <input id="cp-before" class="grow" placeholder="2026-09-24 or a block height">
+          <button type="submit">Find</button>
+        </div>
+        <p id="cp-err" class="err" hidden></p>
+      </form>
+      <div id="cp-out" aria-live="polite"></div>
+    </section>
+
+    <!-- Anchor -->
+    <section class="view" id="view-anchor">
+      <header class="head">
+        <h1>Anchor</h1>
+        <p>The first block whose pool root equals an anchor.</p>
+      </header>
+      <form id="an-form" class="panel form" novalidate>
+        <div class="row">
+          <div>
+            <label for="an-pool">Pool</label>
+            <select id="an-pool">
+              <option value="ironwood">Ironwood</option>
+              <option value="orchard">Orchard</option>
+              <option value="sapling">Sapling</option>
+            </select>
+          </div>
+          <div class="grow">
+            <label for="an-hex">Anchor</label>
+            <input id="an-hex" class="mono" spellcheck="false" maxlength="64" placeholder="64 hex characters">
+          </div>
+          <button type="submit">Locate</button>
+        </div>
+        <p id="an-err" class="err" hidden></p>
+      </form>
+      <div id="an-out" aria-live="polite"></div>
+    </section>
+
+    <!-- Index -->
+    <section class="view" id="view-index">
+      <header class="head head-row">
+        <div>
+          <h1>Index</h1>
+          <p>Roots recomputed from every block and audited every 144 blocks.</p>
+        </div>
+        <button id="ix-refresh" class="ghost" type="button">Refresh</button>
+      </header>
+      <div id="ix-out"><div class="panel muted">Loading…</div></div>
+    </section>
+  </main>
+</div>
+<script src="/assets/js/dashboard.js"></script>
+</body>
+</html>
