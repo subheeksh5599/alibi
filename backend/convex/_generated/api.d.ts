@@ -16,6 +16,7 @@ import type * as lib_constants from "../lib/constants.js";
 import type * as lib_core from "../lib/core.js";
 import type * as lib_lwd from "../lib/lwd.js";
 import type * as lib_wasmBytes from "../lib/wasmBytes.js";
+import type * as relay from "../relay.js";
 
 import type {
   ApiFromModules,
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   "lib/core": typeof lib_core;
   "lib/lwd": typeof lib_lwd;
   "lib/wasmBytes": typeof lib_wasmBytes;
+  relay: typeof relay;
 }>;
 
 /**

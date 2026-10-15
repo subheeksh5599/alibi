@@ -95,7 +95,53 @@ for (const name of ["checkpoint", "cutoff"] as const) {
   });
 }
 
-for (const path of ["/v1/verify"]) {
+// ------------------------------------------------------------------ chain relay for the browser wallet
+
+const int = (s: string | null) => (s !== null && /^\d+$/.test(s) ? Number(s) : NaN);
+
+http.route({
+  path: "/v1/chain/tip",
+  method: "GET",
+  handler: httpAction(async (ctx, req) => reply(await ctx.runAction(internal.relay.tip, { network: network(req) }))),
+});
+
+http.route({
+  path: "/v1/chain/treestate",
+  method: "GET",
+  handler: httpAction(async (ctx, req) => {
+    const height = int(params(req).get("height"));
+    if (Number.isNaN(height)) return send(400, { error: "bad_request", message: "`height` is required" });
+    return reply(await ctx.runAction(internal.relay.treeState, { network: network(req), height }));
+  }),
+});
+
+http.route({
+  path: "/v1/chain/blocks",
+  method: "GET",
+  handler: httpAction(async (ctx, req) => {
+    const from = int(params(req).get("from"));
+    const to = int(params(req).get("to"));
+    if (Number.isNaN(from) || Number.isNaN(to)) return send(400, { error: "bad_request", message: "`from` and `to` are required" });
+    return reply(await ctx.runAction(internal.relay.blocks, { network: network(req), from, to }));
+  }),
+});
+
+http.route({
+  path: "/v1/chain/broadcast",
+  method: "POST",
+  handler: httpAction(async (ctx, req) => {
+    let b: any;
+    try {
+      b = await req.json();
+    } catch {
+      return send(400, { error: "bad_request", message: "body must be JSON" });
+    }
+    if (typeof b?.hex !== "string") return send(400, { error: "bad_request", message: "`hex` is required" });
+    return reply(await ctx.runAction(internal.relay.broadcast, { network: typeof b.network === "string" ? b.network : "main", hex: b.hex }));
+  }),
+});
+
+for (const path of ["/v1/verify", "/v1/chain/broadcast"]) {
   http.route({ path, method: "OPTIONS", handler: httpAction(async () => new Response(null, { status: 204, headers: CORS })) });
 }
 
