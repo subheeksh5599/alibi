@@ -1,0 +1,19 @@
+[package]
+name = "alibi-core"
+description = "Read the note-commitment-tree anchors a Zcash transaction commits to and turn them into a provenance claim."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+zcash_primitives.workspace = true
+zcash_protocol.workspace = true
+orchard.workspace = true
+sapling.workspace = true
+incrementalmerkletree.workspace = true
+hex.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
