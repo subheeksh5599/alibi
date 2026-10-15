@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+
+<html dir="ltr" lang="en">
+<head>
+<meta charset="utf-8"/>
+
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+<meta content="Alibi proves that shielded ZEC was already inside the Zcash shielded pool before a given block, using the snapshot every shielded spend already commits to. No viewing key, no history, no addresses." name="description"/>
+
+
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<title>Alibi | Prove your shielded coins predate an incident</title>
+
+
+
+
+
+
+
+<link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet"/>
+<link href="assets/vendor/aos/aos.css" rel="stylesheet"/>
+<link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet"/>
+
+<link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet"/>
+
+<link href="assets/css/common.css" rel="stylesheet"/>
+<link href="assets/css/header.css" rel="stylesheet"/>
+<link href="assets/css/footer.css" rel="stylesheet"/>
+
+
+
+
+
+<link href="assets/img/mark-dark.svg" rel="icon" type="image/svg+xml"/></head>
+<body>
+
+<header class="fixed-top d-flex align-items-center header-transparent" id="header">
+<div class="container-xxl banner-container-1440 banner-container-991">
+<div class="justify-content-center align-items-center">
+<div class="d-flex align-items-center justify-content-between">
+
+<a class="logo logo-light" href="#hero">
+<img alt="" class="img-fluid" src="assets/img/wordmark-light.svg"/></a>
+
+<a class="logo logo-dark" href="#hero">
+<img alt="" class="img-fluid" src="assets/img/wordmark-dark.svg"/></a>
+
+<a class="final-mark-logo" href="#hero">
+<img alt="" class="img-fluid" src="assets/img/mark-light.svg" style="height:24px;"/></a>
+
+<a class="final-dark-logo" href="#hero">
+<img alt="" class="img-fluid" src="assets/img/mark-dark.svg" style="height:24px;"/></a>
+<nav class="navbar" id="navbar">
+<div class="position-relative d-lg-none language" id="language-m"></div>
+
+
+
+<ul>
+<div class="d-lg-none d-flex justify-content-between align-items-center dropdown-mobile-logo">
+<div class="dropdown-logo">
+<img alt="" src="assets/img/mark-menu.svg"/>
+</div>
+<div class="dropdown-off">
+<svg fill="none" height="20" viewbox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M9.636 8.223L17.131 0.727997L19.272 2.86899L11.777 10.364L19.272 17.859L17.131 20L9.636 12.505L2.141 20L0 17.859L7.495 10.364L0 2.86899L2.141 0.727997L9.636 8.223Z" fill="#4A21EF"></path>
+</svg>
+</div>
+</div>
+<li class="dropdown new-dropdown dropdown-c">
+<a class="scrollto" href="#choose-your-wallet">
+<span class="products-text">Product</span>
+<i class="bi bi-chevron-down"></i>
+<i class="bi bi-caret-down-fill"></i>
+<i class="bi bi-caret-up-fill" style="display: none;"></i>
+<i class="d-lg-none bi bi-plus"></i>
+<i class="d-lg-none bi bi-dash"></i>
+</a>
+<ul class="d-none d-lg-block dropdown-box dropdown-box-c">
+<div class="dropdown-box-content dropdown-box-content-c">
+<div class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-wallet.svg"/>
+<div>
+<h3 class="item-title">Alibi Wallet</h3>
+<p class="text">Age-aware coin selection keeps your oldest shielded notes untouched until you need them.</p>
+</div>
+</a>
+</div>
+<div class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-send.svg"/>
+<div>
+<h3 class="item-title">Alibi Send</h3>
+<p class="text">Builds an Ironwood spend anchored to the last shared checkpoint before an incident.</p>
+</div>
+</a>
+</div>
+<div class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-verifier.svg"/>
+<div>
+<h3 class="item-title">Verifier</h3>
+<p class="text">Reads the snapshot a transaction commits to and the block its inputs provably predate.</p>
+</div>
+</a>
+</div>
+<div class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-grid.svg"/>
+<div>
+<h3 class="item-title">Checkpoint Grid</h3>
+<p class="text">Shared anchor heights, so every alibi for one incident looks the same on chain.</p>
+</div>
+</a>
+</div>
+<div class="box-item border-none">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-lab.svg"/>
+<div>
+<h3 class="item-title">Forgery Lab</h3>
+<p class="text">Tries each known way to fake an alibi and records how it is refused.</p>
+</div>
+</a>
+</div>
+<div class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-all.svg"/>
+<div>
+<h3 class="item-title">View All Components</h3>
+</div>
+</a>
+</div>
+</div>
+</ul>
+<ul class="d-lg-none dropdown-mobile dropdown-mobile-c">
+<li class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-all.svg"/>
+<div>
+<h3 class="item-title">View All Components</h3>
+</div>
+</a>
+</li>
+<li class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-wallet.svg"/>
+<div>
+<h3 class="item-title">Alibi Wallet</h3>
+<p class="text">Age-aware coin selection keeps your oldest shielded notes untouched until you need them.</p>
+</div>
+</a>
+</li>
+<li class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-send.svg"/>
+<div>
+<h3 class="item-title">Alibi Send</h3>
+<p class="text">Builds an Ironwood spend anchored to the last shared checkpoint before an incident.</p>
+</div>
+</a>
+</li>
+<li class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-verifier.svg"/>
+<div>
+<h3 class="item-title">Verifier</h3>
+<p class="text">Reads the snapshot a transaction commits to and the block its inputs provably predate.</p>
+</div>
+</a>
+</li>
+<li class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-grid.svg"/>
+<div>
+<h3 class="item-title">Checkpoint Grid</h3>
+<p class="text">Shared anchor heights, so every alibi for one incident looks the same on chain.</p>
+</div>
+</a>
+</li>
+<li class="box-item">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-lab.svg"/>
+<div>
+<h3 class="item-title">Forgery Lab</h3>
+<p class="text">Tries each known way to fake an alibi and records how it is refused.</p>
+</div>
+</a>
+</li>
+</ul>
+</li>
+<li class="dropdown new-dropdown dropdown-c">
+<a class="scrollto" href="#choose-your-wallet">
+<span>Run</span>
+<i class="bi bi-caret-down-fill"></i>
+<i class="bi bi-caret-up-fill" style="display: none;"></i>
+<i class="d-lg-none bi bi-plus"></i>
+<i class="d-lg-none bi bi-dash"></i>
+</a>
+<ul class="d-none d-lg-block dropdown-box dropdown-box-c">
+<div class="dropdown-box-content dropdown-box-content-c dropdown-box-content-c-app">
+<div class="box-item border-none">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-browser.svg"/>
+<div>
+<h3 class="item-title">Browser Verifier</h3>
+<p class="text">Runs locally, nothing uploaded</p>
+</div>
+</a>
+</div>
+<div class="box-item border-none">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-api.svg"/>
+<div>
+<h3 class="item-title">Verifier API</h3>
+<p class="text">One call per deposit check</p>
+</div>
+</a>
+</div>
+<div class="box-item border-none">
+<a class="item" href="#choose-your-wallet" rel="noopener noreferrer" target="_bank">
+<img alt="" src="assets/img/menu-crate.svg"/>
+<div>
+<h3 class="item-title">Rust Crate</h3>
+<p class="text">Built on librustzcash</p>
+</div>
+</a>
+</div>
+</div>
+</ul>
+<ul class="d-lg-none dropdown-mobile dropdown-mobile-c">
+<li class="box-item border-none">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-browser.svg"/>
+<div>
+<h3 class="item-title">Browser Verifier</h3>
+<p class="text">Runs locally, nothing uploaded</p>
+</div>
+</a>
+</li>
+<li class="box-item border-none">
+<a class="item" href="#choose-your-wallet">
+<img alt="" src="assets/img/menu-api.svg"/>
+<div>
+<h3 class="item-title">Verifier API</h3>
+<p class="text">One call per deposit check</p>
+</div>
+</a>
+</li>
+<li class="box-item border-none">
+<a class="item" href="#choose-your-wallet" rel="noopener noreferrer" target="_bank">
+<img alt="" src="assets/img/menu-crate.svg"/>
+<div>
+<h3 class="item-title">Rust Crate</h3>
+<p class="text">Built on librustzcash</p>
+</div>
+</a>
+</li>
+</ul>
+</li>
+<li class="dropdown"><a class="scrollto" href="#beyond-crypto">Mechanism</a></li>
+<li class="dropdown"><a class="scrollto" href="#crypto">Coin Age</a></li>
+<li class="dropdown new-dropdown">
+<a class="scrollto" href="#trusted">Attacks</a>
+</li>
+<li class="dropdown new-dropdown">
+
+<a class="scrollto" href="#stand-out">
+<span>Docs</span>
+<i class="bi bi-caret-down-fill"></i>
+<i class="bi bi-caret-up-fill" style="display: none;"></i>
+<i class="d-lg-none bi bi-plus"></i>
+<i class="d-lg-none bi bi-dash"></i>
+</a>
+<ul class="d-none d-lg-block dropdown-box">
+<div class="dropdown-box-content dropdown-box-content-about">
+<div class="dropdown-box-item">
+<div class="">
+<li data-path="/about"><a href="#beyond-crypto">Mechanism</a></li>
+<li><a href="#stand-out">Guarantees</a></li>
+<li><a href="#trusted">Threat Model</a></li>
+<li data-path="blog"><a href="https://zips.z.cash/zip-0229">Specifications</a></li>
+<li><a href="#crypto">Coin Age</a></li>
+</div>
+</div>
+</div>
+</ul>
+<ul class="d-lg-none dropdown-mobile dropdown-mobile-about">
+<li><a href="#beyond-crypto">Mechanism</a></li>
+<li><a href="#stand-out">Guarantees</a></li>
+<li><a href="#trusted">Threat Model</a></li>
+<li><a href="https://zips.z.cash/zip-0229">Specifications</a></li>
+<li><a href="#crypto">Coin Age</a></li>
+</ul>
+</li>
+</ul>
+<i class="mobile-nav-toggle">
+<img alt="" class="mobile-nav-light" sizes="" src="assets/img/menu-light.svg"/>
+
+<img alt="" class="mobile-nav-dark" sizes="" src="assets/img/menu-dark.svg"/>
+</i>
+</nav>
+
+<div class="downloads-btn position-relative">
+<div class="language" id="language"></div>
+<div class="set-off-btn animate__animated animate__pulse">
+<div class="set-off-btn animate__animated animate__pulse">
+<a href="#hero">
+<button class="btn-common my-downloads-btn animate__animated animate__pulse" type="button">Verify</button>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+
+
+<header>
+<link href="assets/css/style.css" rel="stylesheet"/>
+</header>
+<main class="home" id="main">
+
+<div class="position-relative hero-choose-your-wallet">
+<section class="position-relative" id="hero">
+
+<div class="container position-relative hero-container d-flex align-items-center justify-content-center flex-column">
+<div class="title" data-aos="fade-down">
+<h3>Prove Where</h3>
+<h3 class="crypto-adventure">Your Coins Were</h3>
+</div>
+<div class="position-relative text-center imgae-box">
+<img alt="" class="absolute img-fluid move-animation-Y hero-ntf" data-aos="fade-down" src="assets/img/medal.svg"/>
+<img alt="" class="absolute img-fluid move-animation-Y hero-hardware-x1" data-aos="fade-right" src="assets/img/device-slim.svg"/>
+<img alt="" class="absolute img-fluid move-animation-Y hero-hardware" data-aos="fade-right" src="assets/img/device-keys.svg"/>
+<img alt="" class="absolute img-fluid move-animation-Y hero-extension" data-aos="fade-left" src="assets/img/tile-verifier.svg"/>
+<img alt="" class="absolute img-fluid move-animation-Y hero-safe-extension" data-aos="fade-left" src="assets/img/tile-app.svg"/>
+<img alt="" class="absolute img-fluid move-animation-Y hero-eth" data-aos="fade-left" src="assets/img/coin-zec.svg"/>
+<img alt="" class="img-fluid hero-mobile move-animation-Y" data-aos="fade-down" src="assets/img/phone-hero.svg"/>
+</div>
+<img alt="" class="position-absolute d-none d-lg-block hero-moon" src="assets/img/moon.svg"/>
+<img alt="" class="position-absolute d-none d-lg-block hero-stripe1" src="assets/img/streak-a.svg"/>
+</div>
+<img alt="" class="absolute img-fluid hero-stripe2" src="assets/img/streak-b.svg"/>
+<img alt="" class="absolute img-fluid hero-stripe3" src="assets/img/streak-c.svg"/>
+</section>
+
+<section id="choose-your-wallet">
+<div class="container title pc-star" data-aos="fade-up">
+
+<div class="d-lg-none m-star m-star-1">
+<div class="position-relative star-1 star-move">
+<div class="star1-point">
+<img alt="" class="img-fluid" src="assets/img/point.svg"/>
+</div>
+<div class="star">
+<img alt="" class="img-fluid" src="assets/img/star-fill.svg"/>
+</div>
+</div>
+</div>
+<div class="title-top">
+<p>SHIELDED BEFORE IT HAPPENED.</p>
+</div>
+<div class="title-middle">
+<p>Choose your Alibi surface.</p>
+</div>
+<div class="title-bottom">
+<p>Prove that shielded ZEC predates an incident without showing a balance, a history or an address, from a wallet, a browser verifier or a command line.</p>
+</div>
+
+<div class="absolute d-none d-lg-block start-1">
+<div class="start1-point">
+<img alt="" class="" src="assets/img/point.svg"/>
+</div>
+<div class="start">
+<img alt="" class="" src="assets/img/star-fill.svg"/>
+</div>
+</div>
+<div class="absolute d-none d-lg-block start-2">
+<div class="start2-point"><img alt="" class="" src="assets/img/point.svg"/></div>
+<div class="start">
+<img alt="" class="" src="assets/img/star-line.svg"/>
+</div>
+</div>
+
+
+<div class="d-lg-none m-star m-star-2">
+<div class="position-relative star-2">
+<div class="star2-point"><img alt="" class="img-fluid" src="assets/img/point.svg"/></div>
+<div class="star">
+<img alt="" class="img-fluid" src="assets/img/star-line.svg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="wallet-box container overflow-hidden">
+<div class="row">
+<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 my-col">
+<div class="wallet-item">
+<a href="#beyond-crypto">
+<div class="img" data-aos="fade-up">
+<img alt="" class="img-fluid" src="assets/img/card-wallet.svg"/>
+</div>
+</a>
+<div class="item-middle d-flex align-items-start justify-content-start flex-column download">
+<div class="middle-left download-left">
+<h3>Wallet</h3>
+</div>
+<div class="middle-right download-right">
+<a href="#beyond-crypto"><button class="right-btn transparent-light-green" type="button">Open</button></a>
+</div>
+</div>
+<div class="describe">
+<p>Keeps your oldest notes untouched for everyday payments and builds alibi spends against the last shared checkpoint before an incident.</p>
+</div>
+</div>
+</div>
+<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 my-col">
+<div class="wallet-item">
+<a href="#beyond-crypto">
+<div class="img" data-aos="fade-up">
+<img alt="" src="assets/img/card-verifier.svg"/>
+</div>
+</a>
+<div class="item-middle d-flex align-items-start justify-content-start flex-column download">
+<div class="middle-left">
+<h3>Verifier</h3>
+</div>
+<div class="middle-right">
+<a href="#beyond-crypto"><button class="right-btn transparent-light-green" type="button">Open</button></a>
+</div>
+</div>
+<div class="describe">
+<p>Paste any Zcash transaction. Read the snapshot it commits to and the block every one of its inputs provably predates.</p>
+</div>
+</div>
+</div>
+<div class="col-xxl-4 col-xl-4 col-lg-4 col-md-12 my-col">
+<div class="wallet-item">
+<a href="#beyond-crypto">
+<div class="img img-bg" data-aos="fade-up">
+<img alt="" class="wallet-hardware" src="assets/img/card-cli.svg"/>
+</div>
+</a>
+<div class="item-middle d-flex align-items-start justify-content-start flex-column buy-now">
+<div class="middle-left">
+<h3>CLI</h3>
+</div>
+<div class="middle-right middle-right-buy">
+<a href="#beyond-crypto"><button class="right-btn transparent-light-green" type="button">Testnet</button></a>
+<a href="#beyond-crypto"><button class="right-btn transparent-light-green" type="button">Mainnet</button></a>
+</div>
+</div>
+<div class="describe">
+<p>Build, broadcast and check alibi transactions from a terminal, against testnet first and mainnet when ready.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div style="height:5px; width: 100vw; background: #4a21ef;"></div>
+</section>
+<img alt="" class="position-absolute d-none d-lg-block epaulet-left" src="assets/img/dots-left.svg"/>
+<img alt="" class="position-absolute d-none d-lg-block epaulet-right" src="assets/img/dots-right.svg"/>
+</div>
+
+<section id="backed">
+<div class="backed-content" data-aos="zoom-in">
+<header class="title">BUILT ON THE ZCASH STACK</header>
+<div class="backed-list backed-slider swiper">
+<div class="swiper-wrapper align-items-center" id="backed-swiper-wrapper">
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-01.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-02.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-03.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-04.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-05.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-06.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-07.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-08.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-09.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-10.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-11.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-12.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-13.svg"/></a></div>
+<div class="swiper-slide"><a href="#beyond-crypto" style="display: block; z-index: 1;"><img alt="" src="assets/img/stack-14.svg"/></a></div>
+
+</div>
+
+</div>
+</div>
+</section>
+<section class="" id="crypto">
+<div class="crypto-main">
+<div class="crypto-box container">
+<div class="container position-relative crypto-content d-flex justify-content-center align-items-center flex-column">
+<div class="crypto-top">
+<div class="title pc-star" data-aos="fade-up">
+<div class="d-lg-none m-star m-star-1">
+<div class="position-relative star-1 star-move">
+<div class="star1-point">
+<img alt="" class="img-fluid" src="assets/img/point.svg"/>
+</div>
+<div class="star">
+<img alt="" class="img-fluid" src="assets/img/star-fill.svg"/>
+</div>
+</div>
+</div>
+<div class="title-top">
+<p>KEEP YOUR ALIBI.</p>
+</div>
+<div class="title-middle">
+<p>Keep your oldest coins old.</p>
+</div>
+<div class="title-bottom">
+<p>Every payment creates new notes dated to the block they land in. Alibi spends your newest notes first, so the ones that predate an incident are still there on the day an exchange or a swap service asks.</p>
+</div>
+<div class="absolute d-none d-lg-block start-1">
+<div class="start1-point">
+<img alt="" class="" src="assets/img/point.svg"/>
+</div>
+<div class="start">
+<img alt="" class="" src="assets/img/star-fill.svg"/>
+</div>
+</div>
+<div class="absolute d-none d-lg-block start-2">
+<div class="start2-point"><img alt="" class="" src="assets/img/point.svg"/></div>
+<div class="start">
+<img alt="" class="" src="assets/img/star-line.svg"/>
+</div>
+</div>
+<div class="d-lg-none m-star m-star-2">
+<div class="position-relative star-2">
+<div class="star2-point"><img alt="" class="img-fluid" src="assets/img/point.svg"/>
+</div>
+<div class="star">
+<img alt="" class="img-fluid" src="assets/img/star-line.svg"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="crypto-bottom d-flex justify-content-center align-items-start flex-lg-row flex-column">
+<div class="crypto-bottom-item earn-now" data-aos="fade-up">
+<div class="top">
+<img alt="" class="img-fluid earn-now" src="assets/img/blob-a.svg"/>
+<img alt="" class="absolute img-fluid move-backInDown btc-earn" data-aos="fade-down" data-aos-duration="1500" src="assets/img/flat-zec.svg"/>
+<img alt="" class="absolute img-fluid move-backInDown x-earn" data-aos="fade-down" data-aos-duration="1500" src="assets/img/flat-clock.svg"/>
+<img alt="" class="absolute img-fluid move-backInDown tok-earn1" data-aos="fade-down" data-aos-duration="1500" src="assets/img/flat-shield.svg"/>
+<img alt="" class="absolute img-fluid move-backInDown tok-earn2" data-aos="fade-down" data-aos-duration="1500" src="assets/img/flat-shield.svg"/>
+<img alt="" class="absolute img-fluid move-backInDown eth-group-earn" data-aos="fade-down" data-aos-duration="1000" src="assets/img/stack-low.svg"/>
+<img alt="" class="absolute img-fluid move-backInDown other-group-earn" data-aos="fade-down" data-aos-duration="1200" src="assets/img/stack-mid.svg"/>
+<img alt="" class="absolute img-fluid move-backInDown btc-group-earn" data-aos="fade-down" data-aos-duration="1100" src="assets/img/stack-tall.svg"/>
+<img alt="" class="absolute img-fluid move-backInDown T-earn" data-aos="fade-down" data-aos-duration="1500" src="assets/img/flat-flag.svg"/>
+</div>
+<div class="middle">
+<h3>Age-aware coin selection.</h3>
+</div>
+<div class="bottom">
+<p>Everyday payments draw from the youngest notes. Older notes are only touched when you ask for an alibi.</p>
+<div class="bottom-btn">
+</div>
+</div>
+</div>
+<div class="crypto-bottom-item trade-now" data-aos="fade-up">
+<div class="top">
+<img alt="" class="trade-img img-fluid" src="assets/img/blob-b.svg"/>
+<img alt="" class="absolute img-fluid d-none d-lg-block crypto-phone" src="assets/img/phone-lying.svg"/>
+<img alt="" class="absolute img-fluid d-lg-none crypto-phone" src="assets/img/phone-lying.svg"/>
+<img alt="" class="absolute img-fluid d-none d-lg-block crypto-token move-animation-Y" src="assets/img/coin-shield.svg" style="top:13.6%;left:49.7%;animation-duration: 7s;"/>
+<img alt="" class="absolute img-fluid crypto-eth move-animation-Y" src="assets/img/coin-zec.svg" style="top:37.6%;left:29.7%;animation-duration: 8s;"/>
+<img alt="" class="absolute img-fluid crypto-eth-b" src="assets/img/shadow-b.svg" style="top:68.5%;left:31.2%;"/>
+<img alt="" class="absolute img-fluid crypto-btc move-animation-Y" src="assets/img/coin-clock.svg" style="top:28.8%;left:79.6%;"/>
+<img alt="" class="absolute img-fluid" src="assets/img/shadow-a.svg" style="top:79.6%;right:0.8%;"/>
+</div>
+<div class="middle">
+<h3>One-tap alibi send.</h3>
+</div>
+<div class="bottom">
+<p>Pick the incident date. Alibi selects notes older than it, anchors the spend to the shared checkpoint before it and shows exactly what becomes public before you confirm.</p>
+<div class="bottom-btn">
+</div>
+</div>
+</div>
+</div>
+<img alt="" class="position-absolute crypto-moon" src="assets/img/half-moon.svg"/>
+<img alt="" class="position-absolute crypto-stripe1" src="assets/img/streak-d.svg"/>
+<img alt="" class="position-absolute crypto-stripe2" src="assets/img/streak-d.svg"/>
+</div>
+</div>
+</div>
+</section>
+
+<section id="beyond-crypto">
+<div class="container beyond-crypto">
+<div class="web3-fingertips d-flex justify-content-center flex-column flex-lg-row">
+<div class="d-lg-none top-image" data-aos="fade-up">
+<img alt="" class="img-fluid" src="assets/img/record-mobile.svg"/>
+</div>
+<div class="fingertips" data-aos="flip-left" data-aos-duration="2000" data-aos-easing="ease-out-cubic">
+<h3 class="title">NO NEW CRYPTOGRAPHY.</h3>
+<div class="text">
+<p>The proof was in every transaction.</p>
+</div>
+<div class="text-describe">
+<p>Every shielded spend names a past snapshot of the pool, and its zero-knowledge proof forces each spent coin to be inside that snapshot. Consensus accepts any earlier snapshot. Wallets always pick one from a few blocks ago. Alibi picks the one from before the incident.</p>
+</div>
+
+
+
+</div>
+<div class="position-relative d-none d-lg-block image">
+<img alt="" class="absolute animate__animated animate__backInDown bottom-shadow" src="assets/img/shadow-wide.svg" style="bottom: 0;"/>
+<img alt="" class="absolute animate__animated animate__backInDown lower-half" src="assets/img/fold-lower.svg" style="bottom: 18%;left:8%;z-index:3"/>
+<img alt="" class="absolute animate__animated animate__backInDown lower-half" src="assets/img/coin-lg-zec.svg" style="bottom: 42.4%;left: 39.3%;z-index: 2;max-width: 104px;"/>
+<img alt="" class="absolute animate__animated animate__backInDown lower-half" src="assets/img/fold-upper.svg" style="bottom: 48%;left:6%;z-index: 2;"/>
+<img alt="" class="absolute animate__animated animate__backInDown lower-half" src="assets/img/fold-tri-a.svg" style="bottom: 48.1%;left:21%;"/>
+<img alt="" class="absolute animate__animated animate__backInDown lower-half" src="assets/img/fold-tri-b.svg" style="left:34.9%;top: -12.2%;z-index: 3;"/>
+<img alt="" class="absolute animate__animated animate__backInDown lower-half" src="assets/img/dots-inner.svg" style="left: 23.2%;top: 35%;z-index: 1;"/>
+<img alt="" class="absolute animate__animated animate__backInDown token-animation" src="assets/img/coin-slim-lock.svg" style="left:73%;top: -12%;z-index:2;"/>
+<img alt="" class="absolute animate__animated animate__backInDown token-animation" src="assets/img/coin-md-shield.svg" style="right: -4.7%;top: 41%;z-index: 3;max-width: 79.3px;"/>
+<img alt="" class="absolute animate__animated animate__backInDown token-animation" src="assets/img/token-tall.svg" style="top:60%;left:24%;z-index:3;max-width: 78.7px;"/>
+<img alt="" class="absolute animate__animated animate__backInDown token-animation" src="assets/img/coin-slim-clock.svg" style="top:31%;left:-2%;max-width: 65px;"/>
+<img alt="" class="absolute animate__animated animate__backInDown clound-animation" src="assets/img/cloud-a.svg" style="bottom:10%;right:-28%;"/>
+<img alt="" class="absolute animate__animated animate__backInDown clound-animation" src="assets/img/cloud-b.svg" style="bottom:10.4%;right:83.1%;"/>
+<img alt="" class="absolute animate__animated animate__backInDown clound-animation" src="assets/img/cloud-c.svg" style="top:-9%;left:13%;"/>
+</div>
+</div>
+<div class="feature">
+<div class="row feature-box d-flex justify-content-center align-items-center" data-aos="fade-up">
+<div class="feature-item col-lg-4 col-md-12 col-sm-12">
+<div class="top">
+<img alt="" class="img-fluid" src="assets/img/icon-nokey.svg"/>
+</div>
+<div class="text">
+<p>No viewing key, no history and no addresses leave the wallet.</p>
+</div>
+</div>
+<div class="feature-item col-lg-4 col-md-12 col-sm-12">
+<div class="top">
+<img alt="" class="img-fluid" src="assets/img/icon-public.svg"/>
+</div>
+<div class="text">
+<p>Anyone can check an alibi from the public transaction alone.</p>
+</div>
+</div>
+<div class="feature-item col-lg-4 col-md-12 col-sm-12">
+<div class="top">
+<img alt="" class="img-fluid" src="assets/img/icon-reject.svg"/>
+</div>
+<div class="text">
+<p>A forged snapshot fails the proof, and the network rejects it.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="stand-out">
+<div class="d-flex justify-content-start align-items-center flex-column stand-out">
+<div class="position-relative container title pc-star">
+
+<div class="d-lg-none m-star m-star-1">
+<div class="position-relative star-1 star-move">
+<div class="star1-point">
+<img alt="" class="img-fluid" src="assets/img/point.svg"/>
+</div>
+<div class="star">
+<img alt="" class="img-fluid" src="assets/img/star-fill.svg"/>
+</div>
+</div>
+</div>
+<h3 class="title-top">Explore what makes an alibi hold.</h3>
+
+<div class="absolute d-none d-lg-block start-1">
+<div class="start1-point">
+<img alt="" class="" src="assets/img/point.svg"/>
+</div>
+<div class="start">
+<img alt="" class="" src="assets/img/star-fill.svg"/>
+</div>
+</div>
+<div class="absolute d-none d-lg-block start-2">
+<div class="start2-point"><img alt="" class="" src="assets/img/point.svg"/></div>
+<div class="start">
+<img alt="" class="" src="assets/img/star-line.svg"/>
+</div>
+</div>
+
+
+<div class="d-lg-none m-star m-star-2">
+<div class="position-relative star-2">
+<div class="star2-point"><img alt="" class="img-fluid" src="assets/img/point.svg"/></div>
+<div class="star">
+<img alt="" class="img-fluid" src="assets/img/star-line.svg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="container enumera enumera-mobile">
+<div class="enumera-mobile-list swiper">
+<div class="swiper-wrapper align-items-center">
+<div class="swiper-slide enumera-item">
+<div class="d-flex justify-content-center align-items-center top">
+<img alt="" class="img-fluid" src="assets/img/feature-1.svg"/>
+</div>
+<div class="bottom">
+<div class="title">
+<h3>Unforgeable</h3>
+</div>
+<div class="text">
+<p>A spend against a snapshot needs every input inside it. A coin received after the incident cannot produce the proof.</p>
+</div>
+</div>
+</div>
+<div class="swiper-slide enumera-item">
+<div class="d-flex justify-content-center align-items-center top">
+<img alt="" class="img-fluid" src="assets/img/feature-2.svg"/>
+</div>
+<div class="bottom">
+<div class="title">
+<h3>Your keys, your coins</h3>
+</div>
+<div class="text">
+<p>Alibi runs inside your wallet. Nothing is uploaded, and the verifier needs only the public transaction.</p>
+</div>
+</div>
+</div>
+<div class="swiper-slide enumera-item">
+<div class="d-flex justify-content-center align-items-center top">
+<img alt="" class="img-fluid" src="assets/img/feature-3.svg"/>
+</div>
+<div class="bottom">
+<div class="title">
+<h3>Shared checkpoints</h3>
+</div>
+<div class="text">
+<p>Every alibi for one incident uses the same anchor height, so the anchor marks a group of users, not a person.</p>
+</div>
+</div>
+</div>
+<div class="swiper-slide enumera-item">
+<div class="d-flex justify-content-center align-items-center top">
+<img alt="" class="img-fluid" src="assets/img/feature-4.svg"/>
+</div>
+<div class="bottom">
+<div class="title">
+<h3>No blacklist</h3>
+</div>
+<div class="text">
+<p>The verifier reports the block your coins predate. The checker applies its own incident dates. Nobody has to be accused.</p>
+</div>
+</div>
+</div>
+<div class="swiper-slide enumera-item">
+<div class="d-flex justify-content-center align-items-center top">
+<img alt="" class="img-fluid" src="assets/img/feature-5.svg"/>
+</div>
+<div class="bottom">
+<div class="title">
+<h3>Age cannot be bought</h3>
+</div>
+<div class="text">
+<p>Payments always create new notes, so stolen coins cannot acquire an older date by being paid to someone.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="enumera-mobile-pagination"></div>
+</div>
+
+</div>
+<div class="container enumera enumera-pc" data-aos="fade-up">
+<div class="enumera-top d-flex justify-content-center align-items-start">
+<div class="enumera-item" data-aos="zoom-out-up">
+<div class="d-flex justify-content-center align-items-end top">
+<img alt="" class="img-fluid enumera-img enumera-1" src="assets/img/feature-1.svg"/>
+</div>
+<div class="bottom">
+<div class="title">
+<h3>Unforgeable</h3>
+</div>
+<div class="text">
+<p>A spend against a snapshot needs every input inside it. A coin received after the incident cannot produce the proof.</p>
+</div>
+</div>
+</div>
+<div class="enumera-item" data-aos="zoom-out-up">
+<div class="d-flex justify-content-center align-items-end top">
+<img alt="" class="img-fluid enumera-img enumera-2" src="assets/img/feature-2.svg"/>
+</div>
+<div class="bottom">
+<div class="title">
+<h3>Your keys, your coins</h3>
+</div>
+<div class="text">
+<p>Alibi runs inside your wallet. Nothing is uploaded, and the verifier needs only the public transaction.</p>
+</div>
+</div>
+</div>
+<div class="enumera-item" data-aos="zoom-out-up">
+<div class="d-flex justify-content-center align-items-end top">
+<img alt="" class="img-fluid enumera-img enumera-3" src="assets/img/feature-3.svg"/>
+</div>
+<div class="bottom">
+<div class="title">
+<h3>Shared checkpoints</h3>
+</div>
+<div class="text">
+<p>Every alibi for one incident uses the same anchor height, so the anchor marks a group of users, not a person.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="enumera-bottom d-flex justify-content-center align-items-start">
+<div class="enumera-item" data-aos="zoom-out-up">
+<div class="d-flex justify-content-center align-items-end top">
+<img alt="" class="img-fluid enumera-img enumera-4" src="assets/img/feature-4.svg"/>
+</div>
+<div class="bottom">
+<div class="title">
+<h3>No blacklist</h3>
+</div>
+<div class="text">
+<p>The verifier reports the block your coins predate. The checker applies its own incident dates. Nobody has to be accused.</p>
+</div>
+</div>
+</div>
+<div class="enumera-item" data-aos="zoom-out-up">
+<div class="d-flex justify-content-center align-items-end top">
+<img alt="" class="img-fluid enumera-img enumera-5" src="assets/img/feature-5.svg"/>
+</div>
+<div class="bottom">
+<div class="title">
+<h3>Age cannot be bought</h3>
+</div>
+<div class="text">
+<p>Payments always create new notes, so stolen coins cannot acquire an older date by being paid to someone.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cta-image-box">
+<div class="container cta-row d-flex justify-content-center align-items-center flex-column" data-aos="fade-up">
+<div class="top">
+<a href="#beyond-crypto"> <button class="top-btn transparent-light-green">Open the Verifier</button></a>
+</div>
+<div class="top" style="margin:0;">
+<a href="#beyond-crypto" rel="noopener noreferrer"><button class="top-btn transparent-light-green">Read the Mechanism</button></a>
+</div>
+
+</div>
+<div class="position-relative d-flex justify-content-center align-items-center image-box">
+<div class="container text-center image">
+<img alt="" class="img-fluid standout-img-center" src="assets/img/vault.svg"/>
+<img alt="" class="absolute img-fluid move-animation-Y" src="assets/img/padlock.svg" style="left: 50%;top: 22px;margin-left: -720px;"/>
+<img alt="" class="absolute img-fluid" src="assets/img/stack-group-b.svg" style="bottom: 270px;left: 50%;margin-left: -627px;"/>
+<img alt="" class="absolute img-fluid move-animation-Y" src="assets/img/coin-stand-flag.svg" style="top: 123px;left: 50%;margin-left: -427px; animation-duration: 7s;"/>
+<img alt="" class="absolute img-fluid move-animation-Y" src="assets/img/cloud-d.svg" style="top: 22px;right: 50%;margin-right: -720px; animation-duration: 5s;"/>
+<img alt="" class="absolute img-fluid" src="assets/img/stack-group-a.svg" style="top: 360px;right: 50%;margin-right: -860px;"/>
+<img alt="" class="absolute img-fluid move-animation-Y" src="assets/img/coin-stand-zec.svg" style="bottom: 180px;right: 50%;margin-right: -630px; animation-duration: 8s;"/>
+</div>
+</div>
+</div>
+<div class="container education d-flex justify-content-center align-items-center flex-column" data-aos="zoom-in-up">
+<div class="title education-item">
+<h3>Nothing proves more than the protocol itself.</h3>
+</div>
+<div class="describe education-item">
+<p>Alibi adds no new trust. It relies on the anchor rule in the Zcash specification and the network's own consensus check, and shows you where each guarantee lives.</p>
+</div>
+<div class="learn-more">
+<a href="https://zips.z.cash/zip-0229" rel="noopener" target="_blank"><button class="learn-more-btn btn-light-green">Read ZIP 229</button></a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<div class="one-wallet-footer home-footer">
+<div class="one-wallet-footer-main">
+
+<section id="trusted">
+<div class="trusted-content">
+<div class="position-relative pc-star title" data-aos="zoom-in">
+
+<div class="d-lg-none m-star m-star-1">
+<div class="position-relative star-1 star-move">
+<div class="star1-point">
+<img alt="" class="img-fluid" src="assets/img/point.svg"/>
+</div>
+<div class="star">
+<img alt="" class="img-fluid" src="assets/img/star-fill.svg"/>
+</div>
+</div>
+</div>
+<h3 class="top-title">Built to be attacked.</h3>
+
+<div class="absolute d-none d-lg-block start-1">
+<div class="start1-point">
+<img alt="" class="" src="assets/img/point.svg"/>
+</div>
+<div class="start">
+<img alt="" class="" src="assets/img/star-fill.svg"/>
+</div>
+</div>
+<div class="absolute d-none d-lg-block start-2">
+<div class="start2-point"><img alt="" class="" src="assets/img/point.svg"/></div>
+<div class="start">
+<img alt="" class="" src="assets/img/star-line.svg"/>
+</div>
+</div>
+
+
+<div class="d-lg-none m-star m-star-2">
+<div class="position-relative star-2">
+<div class="star2-point"><img alt="" class="img-fluid" src="assets/img/point.svg"/>
+</div>
+<div class="star">
+<img alt="" class="img-fluid" src="assets/img/star-fill.svg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="content-box" data-aos="zoom-in" data-aos-id="trusted-swiper" data-aos-once="true">
+<div class="trusted-list trusted-slider swiper">
+<div class="swiper-wrapper align-items-stretch" id="trusted-swiper-wrapper">
+<div class="swiper-slide trusted-item">
+<div class="describe">
+<p>A thief anchors a new coin to an old snapshot. The coin is not in that snapshot, so the proof cannot be built, and a forged one fails verification.</p>
+</div>
+<div class="character-info d-flex justify-content-start align-items-center">
+<div class="avatar">
+<img alt="" class="img-fluid" src="assets/img/case-01.svg"/>
+</div>
+<div class="info">
+<h3 class="name">Backdated snapshot</h3>
+<div class="work">Rejected by consensus</div>
+</div>
+</div>
+</div>
+<div class="swiper-slide trusted-item">
+<div class="describe">
+<p>Stolen coins are paid to an honest holder in exchange for older ones. The payment creates new notes dated to the block they land in.</p>
+</div>
+<div class="character-info d-flex justify-content-start align-items-center">
+<div class="avatar">
+<img alt="" class="img-fluid" src="assets/img/case-02.svg"/>
+</div>
+<div class="info">
+<h3 class="name">Buying age</h3>
+<div class="work">No date transfers</div></div>
+</div>
+</div>
+<div class="swiper-slide trusted-item">
+<div class="describe">
+<p>One old coin and one new coin go into a single spend. A transaction carries one snapshot, so the new coin forces a recent one.</p>
+</div>
+<div class="character-info d-flex justify-content-start align-items-center">
+<div class="avatar">
+<img alt="" class="img-fluid" src="assets/img/case-03.svg"/>
+</div>
+<div class="info">
+<h3 class="name">Mixed inputs</h3>
+<div class="work">Builder refuses</div>
+</div>
+</div>
+</div>
+<div class="swiper-slide trusted-item">
+<div class="describe">
+<p>Change from an alibi spend is a new note. Alibi selects exact amounts where it can and reports any change before you confirm.</p>
+</div>
+<div class="character-info d-flex justify-content-start align-items-center">
+<div class="avatar">
+<img alt="" class="img-fluid" src="assets/img/case-04.svg"/>
+</div>
+<div class="info">
+<h3 class="name">Change outputs</h3>
+<div class="work">Disclosed upfront</div>
+</div>
+</div>
+</div>
+<div class="swiper-slide trusted-item">
+<div class="describe">
+<p>Observers learn the coins are older than block H, which is the claim itself. The shared checkpoint keeps the anchor from identifying you.</p>
+</div>
+<div class="character-info d-flex justify-content-start align-items-center">
+<div class="avatar">
+<img alt="" class="img-fluid" src="assets/img/case-05.svg"/>
+</div>
+<div class="info">
+<h3 class="name">Anchor fingerprint</h3>
+<div class="work">Cohort anchor</div>
+</div>
+</div>
+</div>
+<div class="swiper-slide trusted-item">
+<div class="describe">
+<p>Merkle paths are rebuilt from compact blocks the wallet already downloads. The server sees no request tied to the alibi.</p>
+</div>
+<div class="character-info d-flex justify-content-start align-items-center">
+<div class="avatar">
+<img alt="" class="img-fluid" src="assets/img/case-06.svg"/>
+</div>
+<div class="info">
+<h3 class="name">Server observation</h3>
+<div class="work">No new query</div>
+</div>
+</div>
+</div>
+<div class="swiper-slide trusted-item">
+<div class="describe">
+<p>The verifier names no suspects. It returns the block a transaction's inputs predate and leaves incident dates to the checker.</p>
+</div>
+<div class="character-info d-flex justify-content-start align-items-center">
+<div class="avatar">
+<img alt="" class="img-fluid" src="assets/img/case-07.svg"/>
+</div>
+<div class="info">
+<h3 class="name">Accusation risk</h3>
+<div class="work">No list required</div>
+</div>
+</div>
+</div>
+<div class="swiper-slide trusted-item">
+<div class="describe">
+<p>Funds received after the incident cannot prove an alibi yet. Alibi says so plainly instead of producing a weaker claim.</p>
+</div>
+<div class="character-info d-flex justify-content-start align-items-center">
+<div class="avatar">
+<img alt="" class="img-fluid" src="assets/img/case-08.svg"/>
+</div>
+<div class="info">
+<h3 class="name">Late receipts</h3>
+<div class="work">Stated plainly</div>
+</div>
+</div>
+</div>
+<div class="swiper-slide trusted-item">
+<div class="describe">
+<p>A transaction can spend from Sapling, Orchard and Ironwood at once. Each pool carries its own anchor; Alibi locates every one and the latest decides.</p>
+</div>
+<div class="character-info d-flex justify-content-start align-items-center">
+<div class="avatar">
+<img alt="" class="img-fluid" src="assets/img/case-09.svg"/>
+</div>
+<div class="info">
+<h3 class="name">Several pools</h3>
+<div class="work">Latest anchor decides</div>
+</div>
+</div>
+</div>
+<div class="swiper-slide trusted-item">
+<div class="describe">
+<p>Consensus accepts any earlier treestate. Relay policy for old anchors is checked on testnet before any mainnet broadcast.</p>
+</div>
+<div class="character-info d-flex justify-content-start align-items-center">
+<div class="avatar">
+<img alt="" class="img-fluid" src="assets/img/case-10.svg"/>
+</div>
+<div class="info">
+<h3 class="name">Relay policy</h3>
+<div class="work">Open item</div>
+</div>
+</div>
+</div>
+</div>
+<div class="d-lg-none swiper-pagination-trusted"></div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="one-wallet">
+<div class="one-wallet d-flex justify-content-center align-items-center flex-column">
+<div class="app-logo d-flex justify-content-center align-items-center">
+<div class="logo-box move-animation-Y">
+<img alt="" class="img-fluid" src="assets/img/tile-app-tall.svg"/>
+</div>
+</div>
+<div class="title animate__animated animate__fadeInDown">
+<h3>One fact, proven. Nothing else shared.</h3>
+</div>
+<div class="download">
+<div class="btn-out set-off-btn animate__animated animate__pulse">
+<div class="btn-inner set-off-btn animate__animated animate__pulse">
+<a href="#beyond-crypto"><button class="downloads-btn animate__animated animate__pulse light-green-effect" type="button">Open the Verifier</button></a>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<footer id="footer">
+<div class="container footer-top">
+<div class="row footer-top-box">
+<div class="col-lg col-md-6 col-sm-6 col-6 order-lg-1 order-md-1 order-sm-1 footer-products col-xs-6 top-item">
+<h3>Product</h3>
+<ul>
+
+
+
+
+
+
+
+
+
+
+<li><a href="#choose-your-wallet">Alibi Wallet</a></li><li><a href="#crypto">Alibi Send</a></li><li><a href="#choose-your-wallet">Verifier</a></li><li><a href="#stand-out">Checkpoint Grid</a></li><li><a href="#trusted">Forgery Lab</a></li><li><a href="#choose-your-wallet">CLI</a></li></ul>
+</div>
+<div class="col-lg col-md-6 col-sm-6 col-6 order-lg-2 order-md-3 order-sm-3 footer-support col-xs-6 top-item">
+<h3>Mechanism</h3>
+<ul>
+
+
+
+
+
+
+<li><a href="#beyond-crypto">Anchor rule</a></li><li><a href="#crypto">Coin age</a></li><li><a href="#stand-out">Shared checkpoints</a></li><li><a href="#trusted">Threat model</a></li></ul>
+</div>
+<div class="col-lg col-md-6 col-sm-6 col-6 order-lg-3 order-md-5 order-sm-5 footer-partner col-xs-6 top-item">
+<h3>Specifications</h3>
+<ul>
+
+
+
+
+
+<li><a href="https://zips.z.cash/zip-0229" rel="noopener" target="_blank">ZIP 229</a></li><li><a href="https://zips.z.cash/zip-0318" rel="noopener" target="_blank">ZIP 318</a></li><li><a href="https://zips.z.cash/zip-0315" rel="noopener" target="_blank">ZIP 315</a></li><li><a href="https://zips.z.cash/protocol/protocol.pdf" rel="noopener" target="_blank">Protocol</a></li></ul>
+</div>
+<div class="col-lg col-md-6 col-sm-6 col-6 order-lg-4 order-md-2 order-sm-2 footer-about col-xs-6 top-item">
+<h3>Project</h3>
+<ul>
+
+
+
+
+
+
+
+
+
+
+<li><a href="#hero">Overview</a></li><li><a href="#stand-out">Guarantees</a></li><li><a href="#trusted">Attacks</a></li></ul>
+</div>
+<div class="col-lg col-md-6 col-sm-6 col-6 order-lg-5 order-md-4 order-sm-4 footer-legal col-xs-6 top-item">
+<h3>Legal</h3>
+<ul>
+
+
+
+
+<li><a href="#footer">MIT License</a></li><li><a href="#footer">No data collected</a></li></ul>
+</div>
+</div>
+</div>
+<div class="container footer-bottom">
+<div class="copyright d-flex justify-content-between align-items-lg-end align-items-start flex-lg-row flex-column">
+<div class="brand-foot d-flex justify-content-start align-items-center">
+<div class="logo" href="#hero">
+<img alt="" src="assets/img/mark-footer.svg"/>
+</div>
+<div class="text">
+<p>© 2026 Alibi</p>
+</div>
+</div>
+
+<div class="payment-link">
+<div class="link d-flex align-items-center flex-wrap flex-lg-nowrap">
+
+<div class="link-item source">
+<a href="#hero" rel="noopener noreferrer"><img alt="" src="assets/img/github.svg" style="padding: 4px;"/></a>
+</div>
+
+
+
+
+
+
+
+</div>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<a class="back-to-top d-flex align-items-center justify-content-center" href="#hero"><i class="bi bi-arrow-up-short"></i></a>
+
+
+
+
+
+
+
+<script src="assets/vendor/aos/aos.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+
+
+
+
+
+
+</div><script src="assets/js/site.js"></script></body>
+</html>
