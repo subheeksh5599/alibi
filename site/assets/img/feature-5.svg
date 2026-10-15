@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="129" height="185" viewBox="0 0 129 185" fill="none"><g transform="translate(64.5 85.16) scale(0.6986)"><polygon points="-86.6,50 0,100 0,74 -86.6,24" fill="#7B61FF" stroke="#0D0B33" stroke-width="1.8" stroke-linejoin="round" />
+<polygon points="86.6,50 0,100 0,74 86.6,24" fill="#5A3EE8" stroke="#0D0B33" stroke-width="1.8" stroke-linejoin="round" />
+<polygon points="0,-26 86.6,24 0,74 -86.6,24" fill="#B9ADFF" stroke="#0D0B33" stroke-width="1.8" stroke-linejoin="round" />
+<g transform="matrix(0.87 0.5 -0.87 0.5 0 -26)"><g transform="translate(50 50) rotate(0) scale(0.7000 0.7000) translate(-50 -50)"><path d="M28 16 H72 M28 84 H72 M32 16 C32 40 68 40 68 50 C68 60 32 60 32 84 M68 16 C68 40 32 40 32 50 C32 60 68 60 68 84" stroke="#0D0B33" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g></g>
+<polygon points="-24.25,8 27.71,38 27.71,-42 -24.25,-72" fill="#FFFFFF" stroke="#0D0B33" stroke-width="1.8" stroke-linejoin="round" />
+<polygon points="39.84,31 27.71,38 27.71,-42 39.84,-49" fill="#7B61FF" stroke="#0D0B33" stroke-width="1.8" stroke-linejoin="round" />
+<polygon points="-12.12,-79 39.84,-49 27.71,-42 -24.25,-72" fill="#B9ADFF" stroke="#0D0B33" stroke-width="1.8" stroke-linejoin="round" />
+<g transform="matrix(0.87 0.5 0 1 -24.25 -72)"><g transform="translate(30 40) rotate(0) scale(0.4400 0.4400) translate(-50 -50)"><path d="M28 16 H72 M28 84 H72 M32 16 C32 40 68 40 68 50 C68 60 32 60 32 84 M68 16 C68 40 32 40 32 50 C32 60 68 60 68 84" stroke="#0D0B33" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g></g></g></svg>

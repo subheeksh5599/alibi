@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="268" viewBox="0 0 180 268" fill="none"><g transform="translate(33.71 166.5) scale(1.2500)"><polygon points="-22.52,13 90.07,78 90.07,-52 -22.52,-117" fill="#FFFFFF" stroke="#0D0B33" stroke-width="1.8" stroke-linejoin="round" />
+<polygon points="112.58,65 90.07,78 90.07,-52 112.58,-65" fill="#79EFBD" stroke="#0D0B33" stroke-width="1.8" stroke-linejoin="round" />
+<polygon points="0,-130 112.58,-65 90.07,-52 -22.52,-117" fill="#F7F6FF" stroke="#0D0B33" stroke-width="1.8" stroke-linejoin="round" />
+<line x1="105.08" y1="63.33" x2="105.08" y2="-54.67" stroke="#0D0B33" stroke-width="1.2"/>
+<line x1="97.57" y1="67.67" x2="97.57" y2="-50.33" stroke="#0D0B33" stroke-width="1.2"/>
+<g transform="matrix(0.87 0.5 0 1 -22.52 -117)"><g transform="translate(65 65) rotate(0) scale(0.8060 0.8060) translate(-50 -50)"><path d="M24 82 L50 18 L76 82" stroke="#0D0B33" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="50" cy="60" r="8" fill="#0D0B33"/></g></g></g></svg>
