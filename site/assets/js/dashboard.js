@@ -69,6 +69,8 @@
     document.title = TITLES[view] + " | Alibi";
     var q = new URLSearchParams(parts[1] || "");
     if (q.get("net") && q.get("net") !== NET) setNet(q.get("net"));
+    // The wallet is a testnet wallet; its views always show the testnet index.
+    if ((view === "wallet" || view === "send") && NET !== "test") setNet("test");
     window.dispatchEvent(new CustomEvent("alibi:view", { detail: view }));
     if (view === "verify" && q.get("tx") && q.get("tx") !== lastRun) {
       $("vf-tx").value = q.get("tx");
