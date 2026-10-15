@@ -6,3 +6,4 @@ target/
 dist/
 alibi-release.tgz
 data/
+.wallet/
