@@ -1,0 +1,31 @@
+[package]
+name = "alibi-service"
+description = "Anchor index, verifier API and command line for Alibi."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "alibi"
+path = "src/main.rs"
+
+[dependencies]
+alibi-core = { path = "../alibi-core" }
+anyhow = "1"
+axum = "0.7"
+clap = { version = "4", features = ["derive", "env"] }
+hex.workspace = true
+prost = "0.13"
+rusqlite = { version = "0.32", features = ["bundled"] }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "sync", "time", "signal"] }
+tokio-stream = "0.1"
+tonic = { version = "0.12", features = ["tls", "tls-webpki-roots"] }
+tower-http = { version = "0.6", features = ["cors"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[build-dependencies]
+tonic-build = "0.12"
