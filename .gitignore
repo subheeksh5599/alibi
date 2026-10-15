@@ -1,0 +1,8 @@
+target/
+*.db
+*.db-*
+.env
+.vercel
+dist/
+alibi-release.tgz
+data/
