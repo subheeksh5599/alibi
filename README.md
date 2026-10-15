@@ -70,6 +70,10 @@ txid ──► fetch raw tx from lightwalletd ──► parse v4–v6 tx, read a
 | `GET /v1/anchor/{pool}/{anchor}` | the first block whose root equals this anchor |
 | `GET /v1/checkpoint?before=…` | the shared 144-block grid boundary to anchor an alibi spend to, with every pool's root there |
 | `GET /v1/cutoff?before=2026-09-24T18:30Z` | the first block at or after a UTC time |
+| `GET /v1/chain/tip`, `/v1/chain/treestate?height=`, `/v1/chain/blocks?from=&to=` | relay for the wallet: tip, Ironwood tree state, up to 500 compact blocks |
+| `POST /v1/chain/broadcast` `{network, hex}` | relay a finished transaction; bytes that do not parse as a transaction are never sent |
+
+Every request takes `network=main` (default) or `network=test`.
 
 Verdict kinds:
 
@@ -100,6 +104,40 @@ $ curl -s 'https://compassionate-owl-414.convex.site/v1/tx/14960f89420328fa92739
 | Claim an anchor older than the index | Reported as `unlocated`. Alibi never infers "older" from "not found". |
 | Spend an old note and a new note together | One anchor per pool, and the latest anchor across pools decides. |
 
+## Send with alibi (the wallet)
+
+A verifier alone cannot help someone paying *after* an incident: ordinary wallets anchor about ten
+blocks below the tip, so their spends only prove the coins existed a few minutes ago. The wallet in
+`crates/alibi-wallet` does the other half. It runs in the browser as an import-free WebAssembly
+module (in a Web Worker) and:
+
+1. derives an Orchard/Ironwood key from a seed generated in the browser (ZIP 32, account 0);
+2. scans compact blocks itself, trial-decrypting every Ironwood action with its own viewing key;
+3. at the end of every block on the 144-block grid, stores the root and every unspent note's
+   Merkle witness, and checks that root against the verifier's independently computed one;
+4. for a cut-off block **I**, builds the payment against the grid checkpoint strictly below **I**,
+   spending only notes that were already in the tree there, proves it with halo2 in the browser,
+   and broadcasts it;
+5. asks the verifier for the verdict of its own transaction.
+
+A note received after the checkpoint can never fund the payment: it has no witness at that root,
+and a proof against that root for it cannot exist. The wallet refuses rather than falling back to
+a recent anchor (`tests/build.rs`).
+
+## What it reveals
+
+* **The claim itself.** An alibi payment says "my inputs were in the pool by checkpoint C". The
+  inputs hide among every note in the Ironwood tree at C, not among the notes of one user.
+  Everyone proving against the same incident uses the same C, so the anchor does not single
+  anyone out among them.
+* **That the payment carries an old anchor.** An anchor more than a few blocks old marks the
+  payment as deliberate. Grid-aligned old anchors are also what ZIP 318 migration transfers use.
+* **To the relay.** The block ranges a wallet syncs (which implies roughly when it was created),
+  its IP address, and the raw transaction it broadcasts, the same as any lightwalletd sees. It
+  never sees a key, an address or a note. Run your own lightwalletd to remove that.
+* **In the browser.** The seed and wallet state are kept in `localStorage`, unencrypted. This is a
+  testnet wallet.
+
 ## Limitations
 
 * Anchors older than the index start (block 3,428,142 on mainnet) are not evaluated.
@@ -108,7 +146,14 @@ $ curl -s 'https://compassionate-owl-414.convex.site/v1/tx/14960f89420328fa92739
   because they cannot be told apart from outside. The claim concerns value, and dummies carry none.
 * The index trusts the server only for what it can check: leaf counts, parent hashes and the
   periodic tree-state audit. Running against your own lightwalletd/Zaino removes that trust.
-* Testnet runs NU7 transaction formats that the current parser may not read.
+* Testnet runs NU7 (branch `77190ad9`). The workspace builds on the pre-release zcash crates
+  that support it (`zcash_primitives 0.31.0-pre.2`, `zcash_protocol 0.11.0-pre.1`).
+* Testnet has one public lightwalletd that answers (`testnet.zec.rocks`), so the testnet index and
+  the wallet relay have no fallback server.
+* The wallet spends Ironwood notes only. Proving runs single-threaded in WebAssembly: about two
+  minutes on a 2-core 2017 laptop, 28 s natively on the same machine.
+* The wallet keeps witnesses for the last 60 checkpoints (about 7.5 days on testnet); a cut-off
+  older than that needs a restore from the seed with an earlier birthday.
 
 ## Verify it yourself
 
@@ -117,6 +162,9 @@ cargo test --release                      # core + service tests (real mainnet f
 ./target/release/alibi check-root --pool ironwood --height 3516996 \
     --anchor b0c03d5aeb68d2cb006f633b79ab99cfd1b0ba9dcfb90dbd8d3542a4621ce02f
 python3 scripts/e2e.py http://127.0.0.1:8790   # live checks, transcript written to evidence/
+cargo test --release -p alibi-wallet      # builds and proves a checkpoint-anchored spend, verifies the proof
+sh scripts/build-wallet.sh                # the browser wallet module, checked to have no imports
+node scripts/wallet.mjs new|sync|status|send|verify   # the same wallet engine from the command line
 ```
 
 `check-root` recomputes a root straight from the server's tree state, with no index involved.
@@ -161,11 +209,13 @@ or newer.
 crates/alibi-core      tx parsing, tree roots, claim rules (no network)
 crates/alibi-service   lightwalletd client, SQLite index, verifier, HTTP API, CLI
 crates/alibi-wasm      the core as an import-free WebAssembly module
+crates/alibi-wallet    the alibi wallet: scan, checkpoint witnesses, build and prove (wasm)
+app/                   dashboard and wallet UI (overlaid onto site/ by the site build)
 backend/               Convex deployment: index, cron, HTTP API
 proto/                 lightwalletd protocol
 scripts/e2e.py         live end-to-end checks
 deploy/                systemd unit and installer
-site/                  landing page
+site/                  the deployed site: landing page, /dashboard, the wallet module
 ```
 
 MIT licensed.
