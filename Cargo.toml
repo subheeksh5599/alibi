@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/alibi-core", "crates/alibi-service"]
+members = ["crates/alibi-core", "crates/alibi-service", "crates/alibi-wasm"]
 
 [workspace.package]
 version = "0.1.0"

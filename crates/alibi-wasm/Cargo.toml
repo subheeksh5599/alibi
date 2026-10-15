@@ -1,0 +1,23 @@
+[package]
+name = "alibi-wasm"
+description = "alibi-core compiled to a dependency-free WebAssembly module (JSON in, JSON out)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+alibi-core = { path = "../alibi-core" }
+zcash_primitives.workspace = true
+orchard.workspace = true
+sapling.workspace = true
+incrementalmerkletree.workspace = true
+hex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+prost = "0.13"
+
+[build-dependencies]
+prost-build = "0.13"

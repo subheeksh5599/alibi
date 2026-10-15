@@ -83,6 +83,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "alibi-wasm"
+version = "0.1.0"
+dependencies = [
+ "alibi-core",
+ "hex",
+ "incrementalmerkletree",
+ "orchard",
+ "prost",
+ "prost-build",
+ "sapling-crypto",
+ "serde",
+ "serde_json",
+ "zcash_primitives",
+]
+
+[[package]]
 name = "anstream"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
