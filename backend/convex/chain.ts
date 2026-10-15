@@ -22,9 +22,16 @@ const MAIN_SERVERS = [
 /** Index of a server run by a different operator than MAIN_SERVERS[0], for audit cross-checks. */
 const CROSS_CHECK = 1;
 
-const NETWORKS: Record<string, { servers: string[]; confirmations: number }> = {
+export const NETWORKS: Record<string, { servers: string[]; confirmations: number }> = {
   main: {
     servers: process.env.ALIBI_LWD_MAIN ? process.env.ALIBI_LWD_MAIN.split(",").map((s) => s.trim()).filter(Boolean) : MAIN_SERVERS,
+    confirmations: 10,
+  },
+  // Testnet has one public lightwalletd that answers today. ALIBI_LWD_TEST overrides.
+  test: {
+    servers: process.env.ALIBI_LWD_TEST
+      ? process.env.ALIBI_LWD_TEST.split(",").map((s) => s.trim()).filter(Boolean)
+      : ["https://testnet.zec.rocks:443"],
     confirmations: 10,
   },
 };
@@ -32,8 +39,8 @@ const BATCH = 150;
 const STEP_BUDGET_MS = 4 * 60_000;
 const NEAR_TIP_SCAN = 40;
 
-type Reply = { status: number; body: unknown };
-const fail = (status: number, error: string, message: string): Reply => ({ status, body: { error, message } });
+export type Reply = { status: number; body: unknown };
+export const fail = (status: number, error: string, message: string): Reply => ({ status, body: { error, message } });
 
 // ------------------------------------------------------------------------------- indexing
 
@@ -359,3 +366,4 @@ export const health = internalAction({
     return { status: 200, body: { ok: networks.every((n) => n.index !== null && n.upstream.reachable > 0), networks } };
   },
 });
+
