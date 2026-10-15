@@ -1,0 +1,20 @@
+[Unit]
+Description=Alibi verifier (anchor index + HTTP API)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=/etc/alibi/alibi.env
+WorkingDirectory=/opt/alibi
+ExecStart=/opt/alibi/alibi serve
+Restart=always
+RestartSec=5
+# The index is the only state; it lives in /opt/alibi/data.
+ReadWritePaths=/opt/alibi/data
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
