@@ -301,7 +301,10 @@ export const checkpoint = internalAction({
     if (height > p.indexedHeight) return fail(503, "index_not_ready", `block ${height} is not indexed yet (indexed to ${p.indexedHeight})`);
     const block = await ctx.runQuery(internal.ledger.block, { network: a.network, height });
     const roots = await ctx.runQuery(internal.ledger.rootsAt, { network: a.network, height });
-    return { status: 200, body: { network: a.network, cutoff: c, height, block, grid: GRID, roots } };
+    return {
+      status: 200,
+      body: { network: a.network, cutoff: c, height, block: block && { height: block.height, hash: block.hash, time: block.time }, grid: GRID, roots },
+    };
   },
 });
 
