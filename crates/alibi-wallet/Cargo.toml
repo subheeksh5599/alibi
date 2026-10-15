@@ -1,0 +1,36 @@
+[package]
+name = "alibi-wallet"
+description = "Ironwood light wallet that spends against a chosen 144-block checkpoint anchor (JSON in, JSON out)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+zcash_primitives = { workspace = true, features = ["circuits"] }
+zcash_protocol.workspace = true
+orchard = { workspace = true, features = ["circuit"] }
+sapling.workspace = true
+incrementalmerkletree.workspace = true
+zcash_note_encryption = "0.5.1"
+zcash_address = "=0.14.0-pre.2"
+zip32 = "0.3"
+rand_core = { version = "0.10", default-features = false }
+rand_chacha = { version = "0.10", default-features = false }
+jubjub = "0.11"
+bls12_381 = "0.9"
+hex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+prost = "0.13"
+
+[build-dependencies]
+prost-build = "0.13"
+
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
+getrandom = { version = "0.4", default-features = false }
+
+[dev-dependencies]
+alibi-core = { path = "../alibi-core" }
