@@ -19,7 +19,7 @@ birthday = json.load(open(os.path.join(WDIR, "test.state.json")))["birthday"]
 os.makedirs(OUT, exist_ok=True)
 
 chrome = subprocess.Popen([CHROME, "--headless=new", f"--remote-debugging-port={PORT}", f"--user-data-dir={WDIR}/chrome",
-                           "--no-first-run", "--window-size=1364,900", "about:blank"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                           "--no-first-run", f"--remote-allow-origins=http://127.0.0.1:{PORT}", "--window-size=1364,900", "about:blank"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 try:
     page = None
     for _ in range(50):
@@ -31,7 +31,7 @@ try:
             time.sleep(0.3)
     if page is None:
         sys.exit("Chrome did not start")
-    ws = websocket.create_connection(page["webSocketDebuggerUrl"], timeout=60)
+    ws = websocket.create_connection(page["webSocketDebuggerUrl"], timeout=60, suppress_origin=True)
     n = [0]
 
     def cdp(method, **params):
