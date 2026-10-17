@@ -1,11 +1,17 @@
 # Alibi
 
-**Status (backend): live on Convex** at https://compassionate-owl-414.convex.site
-(`GET /v1/health`). Mainnet is indexed from block 3,428,142 (the block before Ironwood activated)
-and followed by a Convex cron every 2 minutes. Every 144-block boundary is audited against the
-server's own tree state: 1,881 audits so far, 0 mismatches. `scripts/e2e.py` passes 18/18 against
-the live URL; the transcript is in `evidence/`. The wallet side ("send with alibi") is the next
-stage and is not built yet.
+**Status: live.** Site and dashboard: https://alibi-zec.vercel.app/dashboard (the API is on the
+same origin under `/v1`). Mainnet is indexed from block 3,428,142 and testnet (NU7) from
+4,504,032; both are followed by a cron and audited every 144 blocks against two server operators
+(0 mismatches so far, see `/v1/health`).
+
+**The whole claim, done once on testnet from the live dashboard:** transaction
+[`5232f229…6cc9`](https://alibi-zec.vercel.app/dashboard#/verify?tx=5232f22926fd7651fc4f2bd7b8098bc98d4243589aabf3bc9556e6e381726cc9&before=4510950&net=test)
+was built and proved in the browser (117 s), broadcast, and mined at block **4,511,031**, after
+the incident cut-off **4,510,950**. The verifier reports that every input already existed by
+block **4,510,942**, so the payment predates the cut-off. Screenshots of each step are in
+`evidence/live-send/`. `scripts/e2e.py` checks this payment on every run (30/30 against the live
+site).
 
 Alibi proves that the shielded ZEC a transaction spends was already in the shielded pool before a
 given block. The proof reveals one date and nothing else: no balance, no history, no addresses, no
