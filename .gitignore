@@ -7,3 +7,4 @@ dist/
 alibi-release.tgz
 data/
 .wallet/
+__pycache__/
