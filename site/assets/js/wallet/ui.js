@@ -69,32 +69,39 @@ function renderWallet() {
   const st = W.state;
   $("w-sync").disabled = !!syncing;
   $("w-sync").textContent = syncing ? "Syncing…" : "Sync";
+  const D = window.AlibiDash;
+  const behind = lastTip ? Math.max(0, lastTip - 10 - st.height) : null;
   $("w-summary").innerHTML =
-    row("Address", `<span class="hex">${esc(W.address)}</span><br><small><button type="button" class="link" id="w-copy">Copy</button> · <a class="link" href="https://faucet.testnet.valargroup.dev/" target="_blank" rel="noopener">Testnet faucet</a></small>`) +
-    row("Balance", `<span class="num">${taz(b.total)}</span>` + (b.available !== b.total ? `<br><small>${taz(b.available)} available, the rest is in a payment waiting to be mined</small>` : "")) +
-    row("Synced to", `<span class="num">block ${num(st.height)}</span>` + (lastTip ? `<br><small>chain tip ${num(lastTip)}${syncMsg ? " · " + esc(syncMsg) : ""}</small>` : syncMsg ? `<br><small>${esc(syncMsg)}</small>` : ""));
-  $("w-copy").onclick = () => navigator.clipboard.writeText(W.address).then(() => ($("w-copy").textContent = "Copied"));
+    `<div class="box account">` +
+    `<div><p class="acct-label">Shielded balance · Ironwood</p><p class="big">${taz(b.total)}</p>` +
+    `<p class="acct-meta">${num(b.notes)} unspent note${b.notes === 1 ? "" : "s"}` +
+    (b.available !== b.total ? ` · ${taz(b.available)} available, the rest is in a payment waiting to be mined` : "") + `</p></div>` +
+    `<div><p class="acct-label">Address</p><div class="hashline" style="margin-top:8px">${esc(W.address)}${D.copyBtn(W.address)}</div>` +
+    `<p class="acct-meta"><a class="link" href="https://faucet.testnet.valargroup.dev/" target="_blank" rel="noopener">Get testnet ZEC</a></p>` +
+    `<p class="acct-label">Synced to</p><p class="acct-meta" style="color:var(--ink);font-family:var(--mono)">#${num(st.height)}` +
+    (syncing ? ` <span class="warn-t">· ${esc(syncMsg || "syncing")}</span>` : syncMsg ? ` <span class="no-t">· ${esc(syncMsg)}</span>` : behind === 0 ? ` <span class="ok-t">· up to date</span>` : "") +
+    `</p></div></div>`;
 
   const notes = st.notes.slice().reverse();
   $("w-notes").innerHTML = notes.length
-    ? `<table class="tbl"><thead><tr><th>Received in block</th><th>Amount</th><th>Kind</th><th>State</th></tr></thead><tbody>` +
+    ? `<table class="tbl"><thead><tr><th>Received in</th><th class="r">Amount</th><th>Kind</th><th>State</th></tr></thead><tbody>` +
       notes
         .map(
           (n) =>
-            `<tr><td class="num">${num(n.height)}</td><td class="num">${taz(n.value)}</td><td>${n.scope === "internal" ? "Change" : "Received"}</td><td>${
-              n.spent ? `Spent in block ${num(n.spent.height)}` : n.pending ? `<span class="soft">Being spent</span>` : `<span class="ok-t">Unspent</span>`
+            `<tr><td>#${num(n.height)}</td><td class="r">${taz(n.value)}</td><td>${n.scope === "internal" ? "Change" : "Received"}</td><td>${
+              n.spent ? `<span style="color:var(--faint)">Spent in #${num(n.spent.height)}</span>` : n.pending ? `<span class="warn-t">Being spent</span>` : `<span class="ok-t">Unspent</span>`
             }</td></tr>`,
         )
         .join("") +
       `</tbody></table>`
-    : `<div class="muted">No notes yet. Send testnet ZEC to the address above; it shows up about ten blocks after it is mined.</div>`;
+    : `<div class="empty" style="min-height:120px">No notes yet. Send testnet ZEC to the address above; it shows up about ten blocks after it is mined.</div>`;
 
   const cps = st.checkpoints.slice().reverse().slice(0, 12);
   $("w-cps").innerHTML = cps.length
-    ? `<table class="tbl"><thead><tr><th>Block</th><th>Unspent notes witnessed</th><th>Root matches the verifier</th></tr></thead><tbody>` +
-      cps.map((c) => `<tr><td class="num">${num(c.height)}</td><td class="num">${c.witnesses.length}</td><td>${c.verified ? '<span class="ok-t">Yes</span>' : '<span class="soft">Not checked</span>'}</td></tr>`).join("") +
+    ? `<table class="tbl"><thead><tr><th>Checkpoint</th><th class="r">Unspent notes witnessed</th><th>Root matches the verifier</th></tr></thead><tbody>` +
+      cps.map((c) => `<tr><td>#${num(c.height)}</td><td class="r">${c.witnesses.length}</td><td>${c.verified ? '<span class="ok-t">Yes</span>' : '<span style="color:var(--faint)">Not checked yet</span>'}</td></tr>`).join("") +
       `</tbody></table>`
-    : `<div class="muted">The first checkpoint is block ${num(Math.ceil(st.birthday / GRID) * GRID)}. Checkpoints come every ${GRID} blocks.</div>`;
+    : `<div class="empty" style="min-height:120px">The first checkpoint is block #${num(Math.ceil(st.birthday / GRID) * GRID)}. Checkpoints come every ${GRID} blocks.</div>`;
 
   $("w-seedbox").innerHTML =
     row("Seed", `<span class="hex" id="w-seedval">••••••••</span><br><small><button type="button" class="link" id="w-reveal">Reveal</button></small>`) + row("Birthday block", `<span class="num">${num(st.birthday)}</span>`);
@@ -182,6 +189,32 @@ let previewSeq = 0;
 function renderSendGate() {
   $("s-nowallet").hidden = !!W;
   $("s-form").hidden = !W;
+  $("s-side").hidden = !W;
+  $("s-split").hidden = !W;
+}
+
+const EMPTY_PREVIEW = `<div class="empty"><span class="empty-icon">&gt;_</span>Enter a cut-off to see which of your notes can pay.</div>`;
+function previewPanel({ cutoff, cp, notes, total, amount, problem }) {
+  const D = window.AlibiDash;
+  const enough = amount !== null && amount > 0 && total >= amount + FEE_ESTIMATE;
+  const flow =
+    `<div class="flow-line" style="justify-content:flex-start">` +
+    `<span class="node hi"><small>Notes existed by</small><b>#${num(cp)}</b></span><span class="rel">before</span>` +
+    `<span class="node"><small>Cut-off</small><b>#${num(cutoff)}</b></span></div>`;
+  const rows = notes.length
+    ? `<table class="tbl" style="border-top:1px solid var(--line)"><thead><tr><th>Note received in</th><th class="r">Amount</th></tr></thead><tbody>` +
+      notes.map((n) => `<tr><td>#${num(n.height)}</td><td class="r">${taz(n.value)}</td></tr>`).join("") +
+      `</tbody></table>`
+    : "";
+  return (
+    `<div class="inner"><p class="box-title"><span>&gt;</span> ALIBI_PREVIEW</p>${flow}` +
+    `<dl class="tiles tight" style="margin-top:18px">` +
+    D.tile("Checkpoint anchor", "#" + num(cp), "", num(cutoff - cp) + " blocks before the cut-off") +
+    D.tile("Can pay", taz(total), total > 0 ? "ok" : "no", `${notes.length} note${notes.length === 1 ? "" : "s"} already in the pool there`) +
+    `</dl>` +
+    (problem ? `<p class="err">${esc(problem)}</p>` : amount !== null && amount > 0 && !enough ? `<p class="err">Not enough: ${taz(amount)} plus a ${taz(FEE_ESTIMATE)} fee needs ${taz(amount + FEE_ESTIMATE)}.</p>` : "") +
+    `</div>` + rows
+  );
 }
 
 function parseAmount() {
@@ -206,14 +239,14 @@ async function updatePreview() {
   preview = null;
   const text = $("s-cutoff").value.trim();
   if (!W || !text) {
-    el.innerHTML = "";
+    el.innerHTML = EMPTY_PREVIEW;
     return;
   }
   let h;
   try {
     h = await resolveCutoff(text);
   } catch (e) {
-    if (seq === previewSeq) el.innerHTML = `<span class="no-t">${esc(e.message)}</span>`;
+    if (seq === previewSeq) el.innerHTML = `<div class="inner"><p class="err" style="margin:0">${esc(e.message)}</p></div>`;
     return;
   }
   if (seq !== previewSeq) return;
@@ -224,17 +257,18 @@ async function updatePreview() {
   const amount = parseAmount();
   if (!sp.checkpoint) {
     const held = W.state.checkpoints.map((c) => c.height);
-    el.innerHTML = `<span class="no-t">The spend would anchor at block ${num(cp)}, and this wallet holds no checkpoint there. ${
-      held.length ? `It holds checkpoints from block ${num(held[0])} to ${num(held[held.length - 1])}.` : `Its first checkpoint will be block ${num(Math.ceil(W.state.birthday / GRID) * GRID)}.`
-    }</span>`;
+    el.innerHTML = previewPanel({
+      cutoff: h, cp, notes: [], total: 0, amount,
+      problem: cp > W.state.height
+        ? `Checkpoint #${num(cp)} is not reached yet. It becomes usable once block #${num(cp + 10)} is mined and the wallet syncs.`
+        : `This wallet holds no checkpoint at #${num(cp)}. ` +
+          (held.length ? `It holds #${num(held[0])} to #${num(held[held.length - 1])}.` : `It was created after that block; restore it with an earlier birthday.`),
+    });
     return;
   }
   preview = { cutoff: h, checkpoint: cp, total: sp.total };
+  el.innerHTML = previewPanel({ cutoff: h, cp, notes: sp.notes, total: sp.total, amount });
   const enough = amount !== null && amount > 0 && sp.total >= amount + FEE_ESTIMATE;
-  el.innerHTML =
-    `Cut-off block <b>${num(h)}</b> · anchors at checkpoint <b>${num(cp)}</b> · ` +
-    `<b>${sp.notes.length}</b> note${sp.notes.length === 1 ? "" : "s"} existed by then, <b>${taz(sp.total)}</b>` +
-    (amount !== null && amount > 0 && !enough ? `<br><span class="no-t">Not enough: the payment plus a ${taz(FEE_ESTIMATE)} fee needs ${taz(amount + FEE_ESTIMATE)}.</span>` : "");
   $("s-go").disabled = !enough || !$("s-to").value.trim();
 }
 
@@ -260,7 +294,7 @@ $("s-form").onsubmit = async (e) => {
   const go = $("s-go");
   go.disabled = true;
   const t0 = Date.now();
-  out.innerHTML = `<div class="panel muted block"><span class="spin"></span>Building and proving the transaction in this browser <span id="s-elapsed">0s</span></div>`;
+  out.innerHTML = `<div class="res"><div class="box loading"><span class="spin"></span>Building and proving the transaction in this browser · <span id="s-elapsed">0s</span></div></div>`;
   const tick = setInterval(() => {
     const el = $("s-elapsed");
     if (el) el.textContent = Math.round((Date.now() - t0) / 1000) + "s";
@@ -287,19 +321,22 @@ $("s-form").onsubmit = async (e) => {
 };
 
 function showResult(built, cutoff, secs) {
-  const verifyLink = `#/verify?tx=${built.txid}&before=${cutoff}&net=${NETWORK}`;
+  const D = window.AlibiDash;
   $("s-out").innerHTML =
-    `<div class="panel block"><table class="kv">` +
-    row("Transaction", `<span class="hex">${esc(built.txid)}</span><br><small>broadcast · built and proved in ${secs}s</small>`) +
-    row("Anchor", `<span class="num">checkpoint block ${num(built.anchor_height)}</span><br><small class="hex">${esc(built.anchor)}</small>`) +
-    row("Fee", `<span class="num">${taz(built.fee)}</span>`) +
-    `</table></div><div id="s-verdict">${verdictPending()}</div>`;
-  pollVerdict(built.txid, cutoff, verifyLink, 0);
+    `<div class="res"><div class="res-head"><div><p class="eyebrow">&gt; PAYMENT_BROADCAST</p><h2>Alibi payment sent</h2>` +
+    `<div class="hashline">${esc(built.txid)}${D.copyBtn(built.txid)}</div></div></div>` +
+    `<dl class="tiles" style="margin-top:18px">` +
+    D.tile("Anchored at", "#" + num(built.anchor_height), "ok", "the checkpoint before cut-off #" + num(cutoff)) +
+    D.tile("Proved in browser", secs + " s", "", "halo2, single thread, no server") +
+    D.tile("Fee", taz(built.fee), "", "ZIP 317") +
+    D.tile("Change", taz(built.change), "", "back to this wallet") +
+    `</dl></div><div id="s-verdict">${verdictPending()}</div>`;
+  pollVerdict(built.txid, cutoff, 0);
 }
 
-const verdictPending = () => `<div class="panel muted block"><span class="spin"></span>Waiting for the verifier to see the transaction</div>`;
+const verdictPending = () => `<div class="res"><div class="box loading"><span class="spin"></span>Waiting for the verifier to see the transaction on the network</div></div>`;
 
-async function pollVerdict(txid, cutoff, link, attempt) {
+async function pollVerdict(txid, cutoff, attempt) {
   let r;
   try {
     const res = await fetch(`${API}/v1/tx/${txid}?network=${NETWORK}&before=${cutoff}`);
@@ -310,17 +347,12 @@ async function pollVerdict(txid, cutoff, link, attempt) {
   const el = $("s-verdict");
   if (!el) return;
   if (r.status === 200) {
-    const v = r.body.verdict;
-    const ok = v.kind === "predates" || v.kind === "predates_shielded_only";
-    el.innerHTML =
-      `<div class="panel verdict block"><span class="pill ${ok ? "ok" : "no"}">${ok ? "Predates cut-off" : esc(v.kind)}</span>` +
-      `<p class="summary">${esc(v.summary)}</p>` +
-      `<p class="soft small">${r.body.status === "mined" ? `Mined in block ${num(r.body.mined.height)}.` : "In the mempool; the verdict holds once it is mined."} <a class="link" href="${link}">Open in Verify</a></p></div>`;
-    if (r.body.status !== "mined" && attempt < 60) setTimeout(() => pollVerdict(txid, cutoff, link, attempt + 1), 20000);
+    el.innerHTML = window.AlibiDash.verdictBlock(r.body, { eyebrow: "INDEPENDENT_VERDICT", title: "What the verifier sees", noExport: true });
+    if (r.body.status !== "mined" && attempt < 60) setTimeout(() => pollVerdict(txid, cutoff, attempt + 1), 20000);
     return;
   }
-  if (attempt < 30) setTimeout(() => pollVerdict(txid, cutoff, link, attempt + 1), 5000);
-  else el.innerHTML = `<div class="panel muted block no-t">${esc((r.body && r.body.message) || "The verifier has not seen the transaction yet.")}</div>`;
+  if (attempt < 30) setTimeout(() => pollVerdict(txid, cutoff, attempt + 1), 5000);
+  else el.innerHTML = `<div class="res"><div class="box fail">${esc((r.body && r.body.message) || "The verifier has not seen the transaction yet.")}</div></div>`;
 }
 
 // ------------------------------------------------------------------ wiring

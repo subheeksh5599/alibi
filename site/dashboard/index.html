@@ -4,19 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard | Alibi</title>
-<meta name="description" content="Check whether every shielded input of a Zcash transaction existed before a cut-off block.">
+<meta name="description" content="Check whether every shielded input of a Zcash transaction existed before a cut-off block, and pay from notes that did.">
 <link rel="icon" href="/assets/img/favicon.png">
+<link rel="preload" href="/assets/fonts/Geist.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/GeistMono.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/dashboard.css">
 </head>
 <body>
 <div class="shell">
   <aside class="side">
-    <a class="brand" href="/">Alibi</a>
+    <a class="brand" href="/"><span class="mark" aria-hidden="true"></span>Alibi</a>
     <div class="seg" role="group" aria-label="Network">
       <button type="button" data-net="main">Mainnet</button>
       <button type="button" data-net="test">Testnet</button>
     </div>
     <nav class="nav" aria-label="Sections">
+      <p class="nav-label">Verifier</p>
       <a href="#/verify" data-view="verify">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>Verify</a>
       <a href="#/checkpoint" data-view="checkpoint">
@@ -37,166 +40,170 @@
     </div>
   </aside>
 
-  <main class="main">
-    <!-- Verify -->
-    <section class="view" id="view-verify">
-      <header class="head">
-        <h1>Verify</h1>
-        <p>Did every shielded input exist before the cut-off?</p>
-      </header>
-      <form id="vf-form" class="panel form" autocomplete="off" novalidate>
-        <label for="vf-tx">Transaction id</label>
-        <input id="vf-tx" class="mono" spellcheck="false" maxlength="64" placeholder="64 hex characters">
-        <div class="row">
-          <div class="grow">
-            <label for="vf-before">Cut-off <span class="soft">optional</span></label>
-            <input id="vf-before" placeholder="2026-09-24T18:30Z or a block height">
+  <div class="col">
+    <div class="strip" id="strip" aria-label="Index status"><span>Connecting to the verifier…</span></div>
+
+    <main class="main">
+      <!-- Verify -->
+      <section class="view" id="view-verify">
+        <p class="eyebrow">&gt; VERIFY_TX</p>
+        <h1>Verify a transaction</h1>
+        <p class="sub">Did every shielded input already exist before the cut-off block?</p>
+        <form id="vf-form" class="lookup" autocomplete="off" novalidate>
+          <div class="lookup-main">
+            <span class="prompt" aria-hidden="true">&gt;</span>
+            <input id="vf-tx" class="mono" spellcheck="false" maxlength="64" placeholder="Transaction id (64 hex)" aria-label="Transaction id">
           </div>
+          <input id="vf-before" class="lookup-cut mono" placeholder="Cut-off: height or 2026-09-24T18:30Z" aria-label="Cut-off">
           <button id="vf-go" type="submit">Verify</button>
-        </div>
+        </form>
         <p id="vf-err" class="err" hidden></p>
         <div class="examples">
-          <span class="soft">Examples</span>
-          <button type="button" class="link" data-tx="14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f" data-before="3516995">Ironwood spend, height cut-off</button>
-          <button type="button" class="link" data-tx="14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f" data-before="2026-09-24">Same spend, date cut-off</button>
-          <button type="button" class="link" data-tx="0ba9fb6372d50b6999f1629ccc438b0d6fb090ead9c8cf655fb4e99457fb4214" data-before="">Orchard to Ironwood</button>
-          <button type="button" class="link" data-tx="012b9655bf6df069e08fc77d130e52f973719c6f89184d2e4ecea641c3557ed5" data-before="">Transparent only</button>
+          <span class="ex-label">TRY:</span>
+          <button type="button" class="chip-btn" data-tx="14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f" data-before="3516995">Ironwood spend · height cut-off</button>
+          <button type="button" class="chip-btn" data-tx="14960f89420328fa92739217e5e05d6c9bd0e7c1c4640f0c6dc264dc9d3a252f" data-before="2026-09-24">Same spend · date cut-off</button>
+          <button type="button" class="chip-btn" data-tx="0ba9fb6372d50b6999f1629ccc438b0d6fb090ead9c8cf655fb4e99457fb4214" data-before="">Orchard → Ironwood</button>
+          <button type="button" class="chip-btn" data-tx="012b9655bf6df069e08fc77d130e52f973719c6f89184d2e4ecea641c3557ed5" data-before="">Transparent only</button>
         </div>
-      </form>
-      <div id="vf-out" aria-live="polite"></div>
-    </section>
+        <div id="vf-out" aria-live="polite"></div>
+      </section>
 
-    <!-- Checkpoint -->
-    <section class="view" id="view-checkpoint">
-      <header class="head">
-        <h1>Checkpoint</h1>
-        <p>The shared anchor to spend against for a cut-off.</p>
-      </header>
-      <form id="cp-form" class="panel form" novalidate>
-        <label for="cp-before">Cut-off</label>
-        <div class="row">
-          <input id="cp-before" class="grow" placeholder="2026-09-24 or a block height">
-          <button type="submit">Find</button>
+      <!-- Checkpoint -->
+      <section class="view" id="view-checkpoint">
+        <p class="eyebrow">&gt; CHECKPOINT</p>
+        <h1>Checkpoint for an incident</h1>
+        <p class="sub">The shared anchor every alibi payment for a cut-off spends against: the last 144-block grid block before it.</p>
+        <div class="split">
+          <form id="cp-form" class="box pad" novalidate>
+            <p class="box-title"><span>&gt;</span> FIND_CHECKPOINT</p>
+            <label for="cp-before">CUT-OFF</label>
+            <input id="cp-before" class="mono" placeholder="2026-09-24 or a block height">
+            <button type="submit" class="full">Find checkpoint</button>
+            <p id="cp-err" class="err" hidden></p>
+          </form>
+          <div id="cp-out" class="box result" aria-live="polite">
+            <div class="empty"><span class="empty-icon">&gt;_</span>Enter a cut-off to see its checkpoint block and the root of every pool there.</div>
+          </div>
         </div>
-        <p id="cp-err" class="err" hidden></p>
-      </form>
-      <div id="cp-out" aria-live="polite"></div>
-    </section>
+      </section>
 
-    <!-- Anchor -->
-    <section class="view" id="view-anchor">
-      <header class="head">
-        <h1>Anchor</h1>
-        <p>The first block whose pool root equals an anchor.</p>
-      </header>
-      <form id="an-form" class="panel form" novalidate>
-        <div class="row">
-          <div>
-            <label for="an-pool">Pool</label>
+      <!-- Anchor -->
+      <section class="view" id="view-anchor">
+        <p class="eyebrow">&gt; ANCHOR_LOOKUP</p>
+        <h1>Locate an anchor</h1>
+        <p class="sub">The first block whose pool root equals an anchor.</p>
+        <div class="split">
+          <form id="an-form" class="box pad" novalidate>
+            <p class="box-title"><span>&gt;</span> LOCATE_ANCHOR</p>
+            <label for="an-pool">POOL</label>
             <select id="an-pool">
               <option value="ironwood">Ironwood</option>
               <option value="orchard">Orchard</option>
               <option value="sapling">Sapling</option>
             </select>
-          </div>
-          <div class="grow">
-            <label for="an-hex">Anchor</label>
+            <label for="an-hex">ANCHOR</label>
             <input id="an-hex" class="mono" spellcheck="false" maxlength="64" placeholder="64 hex characters">
+            <button type="submit" class="full">Locate</button>
+            <p id="an-err" class="err" hidden></p>
+          </form>
+          <div id="an-out" class="box result" aria-live="polite">
+            <div class="empty"><span class="empty-icon">&gt;_</span>Paste an anchor from any shielded spend.</div>
           </div>
-          <button type="submit">Locate</button>
         </div>
-        <p id="an-err" class="err" hidden></p>
-      </form>
-      <div id="an-out" aria-live="polite"></div>
-    </section>
+      </section>
 
-    <!-- Index -->
-    <section class="view" id="view-index">
-      <header class="head head-row">
-        <div>
-          <h1>Index</h1>
-          <p>Roots recomputed from every block and audited every 144 blocks.</p>
+      <!-- Index -->
+      <section class="view" id="view-index">
+        <div class="title-row">
+          <div>
+            <p class="eyebrow">&gt; INDEX_STATUS</p>
+            <h1>Anchor index</h1>
+            <p class="sub">Roots recomputed from every block, never taken from a server, and audited every 144 blocks.</p>
+          </div>
+          <button id="ix-refresh" class="ghost" type="button">Refresh</button>
         </div>
-        <button id="ix-refresh" class="ghost" type="button">Refresh</button>
-      </header>
-      <div id="ix-out"><div class="panel muted">Loading…</div></div>
-    </section>
-    <!-- Wallet -->
-    <section class="view" id="view-wallet">
-      <header class="head head-row">
-        <div>
-          <h1>Wallet</h1>
-          <p>Testnet. Keys are created and kept in this browser.</p>
+        <div id="ix-out"><div class="box empty">Loading…</div></div>
+      </section>
+
+      <!-- Wallet -->
+      <section class="view" id="view-wallet">
+        <div class="title-row">
+          <div>
+            <p class="eyebrow">&gt; WALLET · TESTNET</p>
+            <h1>Wallet</h1>
+            <p class="sub">Keys are created in this browser and never leave it. Scanning and proving run here too.</p>
+          </div>
+          <button id="w-sync" class="ghost" type="button" hidden>Sync</button>
         </div>
-        <button id="w-sync" class="ghost" type="button" hidden>Sync</button>
-      </header>
-      <div id="w-empty" class="panel form" hidden>
-        <p class="lead">No wallet in this browser.</p>
-        <div class="row">
-          <button id="w-create" type="submit">Create wallet</button>
-          <button id="w-restore-open" class="ghost tall" type="button">Restore from seed</button>
-        </div>
-        <form id="w-restore" class="restore" hidden novalidate>
-          <label for="w-seed">Seed</label>
-          <input id="w-seed" class="mono" spellcheck="false" placeholder="64 hex characters">
+        <div id="w-empty" class="box pad" hidden>
+          <p class="box-title"><span>&gt;</span> NO_WALLET</p>
+          <p class="muted-line">There is no wallet in this browser yet.</p>
           <div class="row">
-            <div class="grow">
-              <label for="w-birthday">Birthday block</label>
-              <input id="w-birthday" inputmode="numeric" placeholder="the first block the wallet must scan">
+            <button id="w-create" type="button">Create wallet</button>
+            <button id="w-restore-open" class="ghost tall" type="button">Restore from seed</button>
+          </div>
+          <form id="w-restore" class="restore" hidden novalidate>
+            <label for="w-seed">SEED</label>
+            <input id="w-seed" class="mono" spellcheck="false" placeholder="64 hex characters">
+            <label for="w-birthday">BIRTHDAY BLOCK</label>
+            <div class="row">
+              <input id="w-birthday" class="mono grow" inputmode="numeric" placeholder="first block to scan">
+              <button type="submit">Restore</button>
             </div>
-            <button type="submit">Restore</button>
-          </div>
-        </form>
-        <p id="w-err" class="err" hidden></p>
-      </div>
-      <div id="w-main" hidden>
-        <div class="panel"><table class="kv" id="w-summary"></table></div>
-        <p class="section-label">Notes</p>
-        <div class="panel" id="w-notes"></div>
-        <p class="section-label">Checkpoints</p>
-        <div class="panel" id="w-cps"></div>
-        <details class="raw">
-          <summary>Seed and birthday</summary>
-          <div class="panel seedbox"><table class="kv" id="w-seedbox"></table></div>
-          <p class="soft small"><button type="button" class="link" id="w-forget">Remove this wallet from the browser</button></p>
-        </details>
-      </div>
-    </section>
+          </form>
+          <p id="w-err" class="err" hidden></p>
+        </div>
+        <div id="w-main" hidden>
+          <div id="w-summary"></div>
+          <p class="section-label"><span>&gt;</span> NOTES</p>
+          <div class="box" id="w-notes"></div>
+          <p class="section-label"><span>&gt;</span> CHECKPOINTS</p>
+          <div class="box" id="w-cps"></div>
+          <details class="raw">
+            <summary>Seed and birthday</summary>
+            <div class="box"><table class="kv" id="w-seedbox"></table></div>
+            <p class="small"><button type="button" class="link" id="w-forget">Remove this wallet from the browser</button></p>
+          </details>
+        </div>
+      </section>
 
-    <!-- Send -->
-    <section class="view" id="view-send">
-      <header class="head">
+      <!-- Send -->
+      <section class="view" id="view-send">
+        <p class="eyebrow">&gt; SEND_WITH_ALIBI · TESTNET</p>
         <h1>Send with alibi</h1>
-        <p>Pay from notes that already existed before an incident, and prove it.</p>
-      </header>
-      <div id="s-nowallet" class="panel muted" hidden>Create a wallet first. <a class="link" href="#/wallet">Open Wallet</a></div>
-      <form id="s-form" class="panel form" autocomplete="off" novalidate hidden>
-        <label for="s-to">To</label>
-        <div class="row tight">
-          <input id="s-to" class="mono grow" spellcheck="false" placeholder="utest1…">
-          <button id="s-self" class="ghost tall" type="button">My address</button>
-        </div>
-        <div class="row">
-          <div class="grow">
-            <label for="s-amount">Amount <span class="soft">TAZ</span></label>
-            <input id="s-amount" inputmode="decimal" placeholder="0.01">
+        <p class="sub">Pay only from notes that already existed before an incident. The payment itself proves it.</p>
+        <div id="s-nowallet" class="box empty" hidden>Create a wallet first. <a class="link" href="#/wallet">Open Wallet</a></div>
+        <div class="split" id="s-split">
+          <form id="s-form" class="box pad" autocomplete="off" novalidate hidden>
+            <p class="box-title"><span>&gt;</span> NEW_PAYMENT</p>
+            <label for="s-to">TO</label>
+            <div class="row">
+              <input id="s-to" class="mono grow" spellcheck="false" placeholder="utest1…">
+              <button id="s-self" class="ghost tall" type="button">Mine</button>
+            </div>
+            <div class="row two">
+              <div>
+                <label for="s-amount">AMOUNT · TAZ</label>
+                <input id="s-amount" class="mono" inputmode="decimal" placeholder="0.01">
+              </div>
+              <div>
+                <label for="s-cutoff">INCIDENT CUT-OFF</label>
+                <input id="s-cutoff" class="mono" placeholder="height or date">
+              </div>
+            </div>
+            <label for="s-memo">MEMO <span class="soft">optional</span></label>
+            <input id="s-memo" maxlength="512">
+            <button id="s-go" type="submit" class="full" disabled>Send with alibi</button>
+            <p id="s-err" class="err" hidden></p>
+          </form>
+          <div class="box result" id="s-side" hidden>
+            <div id="s-preview"><div class="empty"><span class="empty-icon">&gt;_</span>Enter a cut-off to see which of your notes can pay.</div></div>
           </div>
-          <div class="grow">
-            <label for="s-cutoff">Incident cut-off</label>
-            <input id="s-cutoff" placeholder="block height or 2026-10-15T09:00Z">
-          </div>
         </div>
-        <label for="s-memo">Memo <span class="soft">optional</span></label>
-        <input id="s-memo" maxlength="512">
-        <div id="s-preview" class="preview"></div>
-        <div class="row end">
-          <button id="s-go" type="submit" disabled>Send with alibi</button>
-        </div>
-        <p id="s-err" class="err" hidden></p>
-      </form>
-      <div id="s-out" aria-live="polite"></div>
-    </section>
-  </main>
+        <div id="s-out" aria-live="polite"></div>
+      </section>
+    </main>
+  </div>
 </div>
 <script src="/assets/js/dashboard.js"></script>
 <script type="module" src="/assets/js/wallet/ui.js"></script>
