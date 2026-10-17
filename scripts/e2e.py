@@ -25,6 +25,9 @@ POOL_CROSSING = "0ba9fb6372d50b6999f1629ccc438b0d6fb090ead9c8cf655fb4e99457fb421
 SHIELDED_COINBASE = "0c171e2a89395f734dbf3467d98f8fc2617d32171920ee3d9e6b05b0af4f4043"  # 3,517,302
 TRANSPARENT_ONLY = "012b9655bf6df069e08fc77d130e52f973719c6f89184d2e4ecea641c3557ed5"  # 3,517,306
 # Real testnet transactions (NU7, consensus branch 77190ad9).
+# Sent from the live dashboard with "Send with alibi": mined at 4,511,031, after the cut-off 4,510,950,
+# anchored at checkpoint 4,510,944 (root first seen at 4,510,942).
+TEST_ALIBI_PAYMENT = "5232f22926fd7651fc4f2bd7b8098bc98d4243589aabf3bc9556e6e381726cc9"
 TEST_FAUCET_PAYMENT = "fc1d127deaeecc90d03bb5bc37ef569f870d93ff6b9129278f805c64c641a73f"  # Ironwood, 4,504,356
 
 log = []
@@ -136,6 +139,14 @@ check("health reports a testnet index with no audit mismatches", test.get("index
 s, r = call("GET", f"/v1/tx/{TEST_FAUCET_PAYMENT}?network=test")
 check("testnet NU7 transaction parses: Ironwood spend with one anchor",
       s == 200 and r["transaction"]["branch_id"] == "77190ad9" and r["transaction"]["pools"][0]["pool"] == "ironwood")
+
+s, r = call("GET", f"/v1/tx/{TEST_ALIBI_PAYMENT}?network=test&before=4510950")
+check("alibi payment mined AFTER the cut-off still predates it (inputs existed by 4,510,942)",
+      s == 200 and r["mined"]["height"] > 4510950 and r["verdict"]["kind"] == "predates" and r["verdict"]["existed_by"] == 4510942,
+      f"mined {r.get('mined', {}).get('height')}")
+
+s, r = call("GET", f"/v1/tx/{TEST_ALIBI_PAYMENT}?network=test&before=4510942")
+check("the same payment makes no claim for a cut-off at its anchor block", s == 200 and r["verdict"]["kind"] == "does_not_predate")
 
 s, r = call("GET", "/v1/chain/tip?network=test")
 tip = r.get("height", 0)
