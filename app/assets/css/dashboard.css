@@ -39,8 +39,8 @@ button, input, select { font: inherit; color: inherit; }
   display: flex; flex-direction: column; background: var(--side); border-right: 1px solid var(--line);
   padding: 18px 12px;
 }
-.brand { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 17px; letter-spacing: -.02em; padding: 4px 8px 18px; }
-.mark { width: 14px; height: 14px; background: var(--accent); border-radius: 2px; }
+.brand { display: flex; align-items: center; padding: 4px 8px 20px; }
+.brand img { display: block; height: 26px; width: auto; }
 .seg { display: flex; gap: 2px; margin: 0 4px 14px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
 .seg button { flex: 1; border: 0; background: none; padding: 5px 0; border-radius: 5px; font: 500 11px/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--faint); cursor: pointer; }
 .seg button.on { background: var(--raise); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-2); }
@@ -227,7 +227,8 @@ details.raw summary { cursor: pointer; font: 12px var(--mono); letter-spacing: .
 @media (max-width: 860px) {
   .shell { flex-direction: column; }
   .side { position: sticky; z-index: 6; height: auto; width: 100%; flex-direction: row; align-items: center; gap: 6px; padding: 10px 12px; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
-  .brand { padding: 0 8px 0 2px; }
+  .brand { padding: 0 8px 0 2px; flex: none; }
+  .brand img { height: 22px; }
   .seg { margin: 0 4px 0 0; flex: none; }
   .seg button { padding: 5px 8px; }
   .nav { flex-direction: row; }
