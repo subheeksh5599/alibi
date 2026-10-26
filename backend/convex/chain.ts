@@ -5,7 +5,7 @@ import { internalAction } from "./_generated/server";
 import type { ActionCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { core, CoreError } from "./lib/core";
-import { NotFound, Upstream } from "./lib/lwd";
+import { NotFound, Upstream, publicEndpoint } from "./lib/lwd";
 import { GRID, POOLS } from "./lib/constants";
 
 // Mainnet lightwalletd servers from three operators. ALIBI_LWD_MAIN (comma separated) overrides.
@@ -224,7 +224,7 @@ async function verifyById(ctx: ActionCtx, network: string, txid: string, before:
         transaction: ev.transaction,
         verdict: ev.verdict,
         index: { start_height: fresh!.startHeight, indexed_height: fresh!.indexedHeight },
-        source: lwd.url,
+        source: publicEndpoint(lwd.url),
       },
     };
   } catch (e: any) {
@@ -339,9 +339,9 @@ export const health = internalAction({
                 up.at(i).latestHeight(),
                 new Promise<number>((_, rej) => setTimeout(() => rej(new Error("timeout")), 8000)),
               ]);
-              return { url, tip };
+              return { url: publicEndpoint(url), tip };
             } catch (e: any) {
-              return { url, tip: null, error: String(e?.message ?? e).slice(0, 120) };
+              return { url: publicEndpoint(url), tip: null, error: "unreachable" };
             }
           }),
         );
