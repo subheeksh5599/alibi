@@ -66,6 +66,16 @@ export type TreeState = {
   roots: { sapling: string; orchard: string; ironwood: string };
 };
 
+/** Public-safe identifier for an upstream; omit credentials, paths, and query parameters. */
+export function publicEndpoint(url: string): string {
+  try {
+    const endpoint = new URL(url);
+    return `${endpoint.protocol}//${endpoint.host}`;
+  } catch {
+    return "configured lightwalletd";
+  }
+}
+
 export class NotFound extends Error {}
 
 export class Lightwalletd {
@@ -217,7 +227,7 @@ export class Upstream {
         return r;
       } catch (e: any) {
         if (e instanceof NotFound) throw e;
-        errors.push(`${this.urls[i]}: ${e?.message ?? e}`);
+        errors.push(`${publicEndpoint(this.urls[i])}: request failed`);
       }
     }
     throw new Error(`every lightwalletd server failed: ${errors.join("; ")}`);
